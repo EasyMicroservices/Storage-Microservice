@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>EasyMicroservices.StorageMicroservice</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.2" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\EasyMicroservices.StorageMicroservice.Services\EasyMicroservices.StorageMicroservice.Services.csproj" />
+  </ItemGroup>
+
+</Project>

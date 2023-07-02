@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>EasyMicroservices.StorageMicroservice</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EasyMicroservices.StorageMicroservice.Logics\EasyMicroservices.StorageMicroservice.Logics.csproj" />
+  </ItemGroup>
+
+</Project>
