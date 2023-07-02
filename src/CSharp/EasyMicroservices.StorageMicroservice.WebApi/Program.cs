@@ -1,8 +1,5 @@
-using EasyMicroservices.StorageMicroservice.Contracts.Common;
-using EasyMicroservices.StorageMicroservice.Contracts.Requests;
 using EasyMicroservices.StorageMicroservice.Database;
 using EasyMicroservices.StorageMicroservice.Database.Contexts;
-using EasyMicroservices.StorageMicroservice.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.OpenApi.Any;
@@ -29,10 +26,8 @@ namespace EasyMicroservices.StorageMicroservice.WebApi
                 options.SchemaFilter<XEnumNamesSchemaFilter>();
             });
 
-            builder.Services.AddScoped((serviceProvider) => new DependencyManager().GetContractLogic<FormEntity, CreateFormRequestContract, FormContract, FormContract>());
-            builder.Services.AddScoped((serviceProvider) => new DependencyManager().GetContractLogic<FormFilledEntity, FormValuesRequestContract, FormContract, FormContract>());
-            builder.Services.AddScoped((serviceProvider) => new DependencyManager().GetContractLogic<FormDetailEntity, FormDetailContract, FormDetailContract, FormDetailContract>());
-            
+            //builder.Services.AddScoped((serviceProvider) => new DependencyManager().GetContractLogic<FormEntity, CreateFormRequestContract, FormContract, FormContract>());
+
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<IDatabaseBuilder>(serviceProvider => new DatabaseBuilder());
 
