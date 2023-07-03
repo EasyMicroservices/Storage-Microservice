@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>EasyMicroservices.StorageMicroservice</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EasyMicroservices.StorageMicroservice.Database\EasyMicroservices.StorageMicroservice.Database.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="EasyMicroservices.Mapper.CompileTimeMapper" Version="0.0.0.4" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="DatabaseLogics\" />
+    <Folder Include="Mappers\" />
+  </ItemGroup>
+  
+</Project>
