@@ -15,6 +15,10 @@ namespace EasyMicroservices.StorageMicroservice.WebApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .Build();
+
             // Add services to the container.
             //builder.Services.AddAuthorization();
             builder.Services.AddControllers();
@@ -25,6 +29,10 @@ namespace EasyMicroservices.StorageMicroservice.WebApi
                 options.SchemaFilter<GenericFilter>();
                 options.SchemaFilter<XEnumNamesSchemaFilter>();
             });
+
+            builder.Services.AddDbContext<StorageContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString(config.GetConnectionString("local")))
+            );
 
             //builder.Services.AddScoped((serviceProvider) => new DependencyManager().GetContractLogic<FormEntity, CreateFormRequestContract, FormContract, FormContract>());
 
