@@ -148,9 +148,20 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
 
             if (entityToDelete != null)
             {
+                
+                var FilesInFolder = _context.Files.Where(o => o.FolderId == entityToDelete.Id);
+                if (FilesInFolder.Any())
+                {
+                    foreach (var file in FilesInFolder)
+                    {
+                        _context.Files.Remove(file);
+                    }
+                }
+                
                 Directory.Delete(PathToFullPath(entityToDelete.Path), true);
 
                 _context.Folders.Remove(entityToDelete);
+
                 await _context.SaveChangesAsync();
 
                 result.IsSuccessful = true;

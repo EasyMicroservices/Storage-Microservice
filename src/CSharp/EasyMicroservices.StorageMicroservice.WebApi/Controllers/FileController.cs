@@ -26,7 +26,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         private string NameToFullPath(string FilePath)
         {
             string webRootPath = @Directory.GetCurrentDirectory();
-            string directoryPath = Path.Combine(webRootPath, "wwwroot", Constants.RootAddress, FilePath);
+            string directoryPath = Path.Combine(webRootPath, "wwwroot", Constants.RootAddress, FilePath); 
             return directoryPath;
         }
 
@@ -108,7 +108,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                             newFile.FolderId,
                             newFile.Password,
                             newFile.Path,
-                            DownloadLink =  GenerateDownloadLink(newFile.Guid, newFile.Password),
+                            DownloadLink = GenerateDownloadLink(HttpContext, newFile.Guid, newFile.Password),
                         };
 
                     } else
@@ -167,6 +167,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
 
         }
 
+
         [HttpDelete]
         public async Task<ResultContract> DeleteFileByIdAsync(long id, string? password)
         {
@@ -175,12 +176,11 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             return await DeleteFileByGuidAsync(file.Guid, password);
         }
 
-        private string GenerateDownloadLink(string fileGuid, string Password)
+        private static string GenerateDownloadLink(HttpContext httpContext, string fileGuid, string Password)
         {
-            string DownloadLink = @$"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/File/DownloadFile/{fileGuid}" + $"?password={Password ?? string.Empty}";
+            string DownloadLink = @$"{httpContext.Request.Scheme}://{httpContext.Request.Host}/api/File/DownloadFile/{fileGuid}" + $"?password={Password ?? string.Empty}";
             return DownloadLink;
         }
-
 
         [HttpGet("{fileGuid}")]
         public IActionResult DownloadFile(string fileGuid, [FromQuery] string? password)
@@ -191,7 +191,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                 return NotFound();
             } else
             {
-                if(file.Password == password && password != null)
+                if(file.Password == password)
                 {
                     var filePath = NameToFullPath(file.Path);
 
@@ -216,6 +216,50 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
 
             return DownloadFile(file.Guid, password);
         }
+
+
+        //[HttpGet]
+        //public ResultContract GetFilesByFolderId(long FolderId)
+        //{
+        //    var Result = new ResultContract
+        //    {
+        //        IsSuccessful = true
+        //    };
+
+        //    if (FolderId != 0)
+        //    {
+        //        var Files = _context.Files.Where(o => o.FolderId == FolderId);
+        //        if (!Files.Any())
+        //        {
+        //            Result.IsSuccessful = false;
+        //            Result.Message = "There isn't any file in entered Folder.";
+        //        }
+        //        else
+        //        {
+
+        //            Result.OutputRes = Files.Select(f => new {
+        //                f.Id,
+        //                f.Name,
+        //                f.Guid,
+        //                f.Length,
+        //                f.FolderId,
+        //                f.Extension,
+        //                f.ContentType,
+        //                f.CreationDateTime,
+        //                f.ModificationDateTime,
+        //                DownloadLink = GenerateDownloadLink(HttpContext, f.Guid, f.Password),
+        //                Folder = new
+        //                {
+        //                    f.Folder.Id,
+        //                    f.Folder.Name
+        //                },
+        //            }).ToList();
+        //        }
+        //    }
+
+        //    return Result;
+        //}
+
 
 
     }
