@@ -1,0 +1,35 @@
+            //double TotalPurchaseAmount = 0;
+            //List<DtTransactions> res;
+            //List<(long id, double Price, TransactionType TransactionType, DateTime? CreationTime)> PurchaseAmounts = new();
+
+            //IQueryable<DtTransactions> query = _DtTransactionFactory.GetAll()
+            //    .Where(o => o.TenantId == tenantId && o.CreationTime.Date >= fromDate.Date && o.CreationTime.Date <= toDate.Date);
+
+            //res = await query.OrderByDescending(o => o.CreationTime).ToListAsync();
+
+            //foreach (var transaction in res)
+            //{
+            //    PurchaseAmounts.Add((transaction.Id, transaction.TotalPrice, transaction.TransactionTypeId, transaction.CreationTime));
+            //    TotalPurchaseAmount += transaction.TotalPrice;
+            //}
+
+
+            //var temp = PurchaseAmounts.GroupBy(o => o.CreationTime.Value.Date).Select(group => new
+            //{
+            //    Date = group.Key,
+            //    TotalSales = group.Sum(o => o.Price),
+            //    SalesBreakdown = new SalesBreakdown
+            //    {}
+            //});
+
+            //return temp;
+
+            //Result.DailyTransactions = temp.Select(t => new DailyTransactionReport_Dom
+            //{
+            //    Date = t.Date,
+            //    TotalSales = t.TotalSales,
+            //    SalesBreakdown = new List<SalesBreakdown>
+            //    {
+            //        t.SalesBreakdown
+            //    }
+            //}).ToList();

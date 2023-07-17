@@ -8,7 +8,7 @@ namespace EasyMicroservices.StorageMicroservice.Contracts
 {
     public class Constants
     {
-        public static string[] AllowedFileExtensions = new string[] { ".jpg", ".jpeg", ".png" };
+        public static string[] AllowedFileExtensions = new string[] { ".jpg", ".jpeg", ".png", ".txt" };
         public static string RootAddress = "storage";
     }
 }

@@ -30,9 +30,9 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         }
 
         [HttpGet]
-        public async Task<ResultDto> GetAll()
+        public async Task<ResultContract> GetAll()
         {
-            ResultDto result = new();
+            ResultContract result = new();
             var Folders = await _context.Folders.ToListAsync();
 
 
@@ -51,9 +51,9 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         }
 
         [HttpPut]
-        public async Task<ResultDto> UpdateAsync(UpdateFolderDom input)
+        public async Task<ResultContract> UpdateAsync(UpdateFolderDom input)
         {
-            ResultDto result = new();
+            ResultContract result = new();
             string webRootPath = @Directory.GetCurrentDirectory();
             string Path = input.Path.ToLower();
 
@@ -94,9 +94,9 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         }
 
         [HttpPost]
-        public async Task<ResultDto> AddAsync(AddFolderDom input)
+        public async Task<ResultContract> AddAsync(AddFolderDom input)
         {
-            ResultDto result = new();
+            ResultContract result = new();
             string Path = input.Path.ToLower();
 
             if (Regex.IsMatch(Path, @"^[a-zA-Z]+$"))
@@ -118,6 +118,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                     await _context.SaveChangesAsync();
 
                     Directory.CreateDirectory(PathToFullPath(Path));
+                    System.IO.File.Create(System.IO.Path.Combine(PathToFullPath(Path), ".gitkeep"));
 
                     result.OutputRes = AddedFolder.Entity;
                     result.Message = "Folder created successfully";
@@ -139,9 +140,9 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         }
 
         [HttpDelete]
-        public async Task<ResultDto> DeleteAsync(long Id)
+        public async Task<ResultContract> DeleteAsync(long Id)
         {
-            ResultDto result = new();
+            ResultContract result = new();
 
             var entityToDelete = await _context.Folders.FindAsync(Id);
 

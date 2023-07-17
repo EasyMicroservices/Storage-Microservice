@@ -1,0 +1,41 @@
+{
+	"Environments": [
+		{
+			"Name": "StorageMicroservice",
+			"GenerationPath": "D:\\repos\\fork\\Storage-Microservice\\src\\CSharp\\EasyMicroservices.StorageMicroservice.Logics\\Mappers",
+			"BuildPath": "D:\\repos\\fork\\Storage-Microservice\\src\\CSharp\\EasyMicroservices.StorageMicroservice.WebApi\\bin\\Debug\\net6.0",
+			"NameSpaces": [
+				"EasyMicroservices.Mapper.Interfaces",
+				"EasyMicroservices.Mapper.CompileTimeMapper.Interfaces",
+				"System.Linq"
+			],
+			"Groups": [
+				{
+					"DisplayName": "FolderEntity-FolderContract",
+					"MapFrom": {
+						"Name": "FolderEntity",
+						"Namespace": "EasyMicroservices.StorageMicroservice.Database.Entities",
+						"AssebmlyFileName": "EasyMicroservices.StorageMicroservice.Database.dll"
+					},
+					"MapTo": {
+						"Name": "FolderContract",
+						"Namespace": "EasyMicroservices.StorageMicroservice.Contracts",
+						"AssebmlyFileName": "EasyMicroservices.StorageMicroservice.Domain.dll"
+					},
+
+					"SkippedProperties": [
+						{
+							"Name": "ModificationDateTime"
+						},
+						{
+							"Name": "Files"
+						}
+					],
+					"CustomProperties": [
+
+					]
+				}
+			]
+		}
+	]
+}

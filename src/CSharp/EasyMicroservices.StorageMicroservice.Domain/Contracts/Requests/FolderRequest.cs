@@ -16,11 +16,9 @@ namespace EasyMicroservices.StorageMicroservice.Contracts
         }
 
         [StringLength(100, MinimumLength = 5, ErrorMessage = "Folder name must be between 6 and 100 characters.")]
-        [DataType(DataType.Text)]
         public string Name { get; set; }
 
         [StringLength(63, MinimumLength = 5, ErrorMessage = "Folder path must be between 6 and 100 characters.")]
-        [DataType(DataType.Text)]
         public string Path { get; set; }
     }
 
@@ -37,7 +35,6 @@ namespace EasyMicroservices.StorageMicroservice.Contracts
         public string Name { get; set; }
 
         [StringLength(63, MinimumLength = 5, ErrorMessage = "Folder path must be between 6 and 100 characters.")]
-        [DataType(DataType.Text)]
         public string Path { get; set; }
     }
 }

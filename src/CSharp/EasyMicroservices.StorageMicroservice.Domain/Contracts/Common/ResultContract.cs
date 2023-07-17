@@ -8,7 +8,7 @@ namespace EasyMicroservices.StorageMicroservice.Contracts
 {
     public static class Extensions
     {
-        public static ResultDto SetResultState(this ResultDto result, int status, object outputRes)
+        public static ResultContract SetResultState(this ResultContract result, int status, object outputRes)
         {
             result.StatusId = (int)status;
             result.Message = string.Empty;
@@ -17,9 +17,9 @@ namespace EasyMicroservices.StorageMicroservice.Contracts
             return result;
         }
     }
-    public class ResultDto
+    public class ResultContract
     {
-        public ResultDto()
+        public ResultContract()
         {
             this.SetResultState(0, new object());
         }

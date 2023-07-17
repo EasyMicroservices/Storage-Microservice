@@ -7,13 +7,8 @@ using System.Threading.Tasks;
 
 namespace EasyMicroservices.StorageMicroservice.Contracts
 {
-    public class GetAllFoldersDto
+    public class FolderContract
     {
-        public GetAllFoldersDto()
-        {
-            Name = string.Empty;
-            Path = string.Empty;
-        }
         public long Id { get; set; }
         public DateTime CreationDateTime { get; set; }
         public string Name { get; set; }
