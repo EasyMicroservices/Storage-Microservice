@@ -6,14 +6,25 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
+using EasyMicroservices.FileManager;
+using Microsoft.Extensions.DependencyInjection;
+using EasyMicroservices.FileManager.Interfaces;
+using EasyMicroservices.FileManager.Providers.PathProviders;
+using EasyMicroservices.FileManager.Providers.DirectoryProviders;
+using EasyMicroservices.FileManager.Providers.FileProviders;
 
 namespace EasyMicroservices.StorageMicroservice.WebApi
 {
     public class Program
     {
+
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .Build();
 
             // Add services to the container.
             //builder.Services.AddAuthorization();
@@ -26,10 +37,22 @@ namespace EasyMicroservices.StorageMicroservice.WebApi
                 options.SchemaFilter<XEnumNamesSchemaFilter>();
             });
 
+            builder.Services.AddDbContext<StorageContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString(config.GetConnectionString("local")))
+            );
+
             //builder.Services.AddScoped((serviceProvider) => new DependencyManager().GetContractLogic<FormEntity, CreateFormRequestContract, FormContract, FormContract>());
+            string webRootPath = @Directory.GetCurrentDirectory();
 
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<IDatabaseBuilder>(serviceProvider => new DatabaseBuilder());
+            builder.Services.AddScoped<IDirectoryManagerProvider>(serviceProvider => new DiskDirectoryProvider(webRootPath));
+            builder.Services.AddScoped<IFileManagerProvider>(serviceProvider => new DiskFileProvider(new DiskDirectoryProvider(webRootPath)));
+            //builder.Services.AddScoped<IFileManagerProvider>(serviceProvider => new FileManagerProvider());
+            //builder.Services.AddScoped<IDirectoryManagerProvider, kc>();
+
+            //builder.Services.AddScoped<IDirectoryManagerProvider>(serviceProvider => new FileManager());
+            //builder.Services.AddScoped<IFileManagerProvider>();
 
             var app = builder.Build();
             app.UseDeveloperExceptionPage();

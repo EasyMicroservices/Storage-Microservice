@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="EasyMicroservices.Cores.AspCoreApi" Version="0.0.0.5" />
+    <PackageReference Include="EasyMicroservices.FileManager" Version="0.0.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -19,7 +20,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Folder Include="wwwroot\storage\" />
   </ItemGroup>
 
 </Project>
