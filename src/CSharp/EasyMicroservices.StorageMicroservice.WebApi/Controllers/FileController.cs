@@ -39,10 +39,10 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
 
 
         [HttpPost("AddFileAsync")]
-        public async Task<MessageContract<object>> AddSingleFileAsync([FromForm] AddFileContract input)
+        public async Task<MessageContract<AddFileResultContract>> AddSingleFileAsync([FromForm] AddFileContract input)
         {
 
-            var result = new MessageContract<object>
+            var result = new MessageContract<AddFileResultContract>
             {
                 IsSuccess = true
             };
@@ -104,17 +104,17 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                         await _context.Files.AddAsync(newFile);
                         await _context.SaveChangesAsync();
 
-                        result.Result = new
+                        result.Result = new AddFileResultContract
                         {
-                            newFile.CreationDateTime,
-                            newFile.Name,
-                            newFile.Guid,
-                            newFile.ContentType,
-                            newFile.Length,
-                            newFile.Extension,
-                            newFile.FolderId,
-                            newFile.Password,
-                            newFile.Path,
+                            CreationDateTime = newFile.CreationDateTime,
+                            Name = newFile.Name,
+                            Guid = newFile.Guid,
+                            ContentType = newFile.ContentType,
+                            Length = newFile.Length,
+                            Extension = newFile.Extension,
+                            FolderId = newFile.FolderId,
+                            Password = newFile.Password,
+                            Path = newFile.Path,
                             DownloadLink = GenerateDownloadLink(HttpContext, newFile.Guid.ToString(), newFile.Password),
                         };
 
@@ -134,9 +134,9 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         }
 
         [HttpDelete]
-        public async Task<MessageContract<FileEntity>> DeleteFileByGuidAsync(string guid, string? password)
+        public async Task<MessageContract<DeleteFileResultContract>> DeleteFileByGuidAsync(string guid, string? password)
         {
-            var Result = new MessageContract<FileEntity>
+            var Result = new MessageContract<DeleteFileResultContract>
             {
                 IsSuccess = true
             };
@@ -161,7 +161,19 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                         _context.Files.Remove(file);
                         await _context.SaveChangesAsync();
 
-                        Result.Result = file;
+                        Result.Result = new DeleteFileResultContract
+                        {
+                            Id = file.Id,
+                            CreationDateTime = file.CreationDateTime,
+                            Guid = file.Guid,
+                            Password = file.Password,
+                            ContentType = file.ContentType,
+                            FolderId = file.FolderId,
+                            Name = file.Name,
+                            Extension = file.Extension,
+                            Length = file.Length,
+                            Path = filePath,
+                        };
                     }
                 }
                 else
@@ -177,7 +189,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
 
 
         [HttpDelete]
-        public async Task<MessageContract<FileEntity>> DeleteFileByIdAsync(long id, string? password)
+        public async Task<MessageContract<DeleteFileResultContract>> DeleteFileByIdAsync(long id, string? password)
         {
             var file = _context.Files.Where(o => o.Id == id).FirstOrDefault();
 

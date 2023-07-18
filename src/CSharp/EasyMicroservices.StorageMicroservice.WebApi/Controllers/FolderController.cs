@@ -35,16 +35,21 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         }
 
         [HttpGet]
-        public async Task<MessageContract<List<FolderEntity>>> GetAll()
+        public async Task<MessageContract<List<FolderContract>>> GetAll()
         {
-            var result = new MessageContract<List<FolderEntity>>();
+            var result = new MessageContract<List<FolderContract>>();
             var Folders = await _context.Folders.ToListAsync();
 
 
             if (Folders.Count > 0)
             {
                 result.IsSuccess = true;
-                result.Result = Folders;
+                result.Result = Folders.Select(f => new FolderContract {
+                    Id = f.Id,
+                    CreationDateTime = f.CreationDateTime,
+                    Name = f.Name,
+                    Path = f.Path
+                }).ToList();
             }
             else
             {
@@ -56,9 +61,9 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         }
 
         [HttpPut]
-        public async Task<MessageContract<FolderEntity>> UpdateAsync(UpdateFolderContract input)
+        public async Task<MessageContract<FolderContract>> UpdateAsync(UpdateFolderContract input)
         {
-            var result = new MessageContract<FolderEntity>();
+            var result = new MessageContract<FolderContract>();
             string webRootPath = @Directory.GetCurrentDirectory();
             string Path = input.Path.ToLower();
 
@@ -76,7 +81,13 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                     existingFolder.Name = input.Name ?? existingFolder.Name;
                     existingFolder.Path = Path ?? existingFolder.Path;
 
-                    result.Result = existingFolder;
+                    result.Result = new FolderContract
+                    {
+                        Id = existingFolder.Id,
+                        CreationDateTime = existingFolder.CreationDateTime,
+                        Name = existingFolder.Name,
+                        Path = existingFolder.Path,
+                    };
                     result.IsSuccess = true;
 
                     await _context.SaveChangesAsync();
@@ -98,9 +109,9 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         }
 
         [HttpPost]
-        public async Task<MessageContract<FolderEntity>> AddAsync(AddFolderContract input)
+        public async Task<MessageContract<FolderContract>> AddAsync(AddFolderContract input)
         {
-            var result = new MessageContract<FolderEntity>();
+            var result = new MessageContract<FolderContract>();
             
             string Path = input.Path.ToLower();
 
@@ -112,20 +123,26 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                 if (!exists)
                 {
 
-                    var folder = new FolderEntity
+                    var Folder = new FolderEntity
                     {
                         CreationDateTime = DateTime.Now,
                         Name = input.Name,
                         Path = Path,
                     };
 
-                    var AddedFolder = await _context.Folders.AddAsync(folder);
+                    var AddedFolder = await _context.Folders.AddAsync(Folder);
                     await _context.SaveChangesAsync();
 
                     await _directoryManagerProvider.CreateDirectoryAsync(PathToFullPath(Path));
                     await _fileManagerProvider.CreateFileAsync(_directoryManagerProvider.PathProvider.Combine(PathToFullPath(Path), ".gitkeep"));
 
-                    result.Result = AddedFolder.Entity;
+                    result.Result = new FolderContract
+                    {
+                        Id = AddedFolder.Entity.Id,
+                        CreationDateTime = Folder.CreationDateTime,
+                        Name = Folder.Name,
+                        Path = Folder.Path,
+                    };
                     result.IsSuccess = true;
                 }
                 else
@@ -144,11 +161,11 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         }
 
         [HttpDelete]
-        public async Task<MessageContract> DeleteAsync(long Id)
+        public async Task<MessageContract> DeleteAsync(long fileId)
         {
             var result = new MessageContract();
 
-            var entityToDelete = await _context.Folders.FindAsync(Id);
+            var entityToDelete = await _context.Folders.FindAsync(fileId);
 
             if (entityToDelete != null)
             {
