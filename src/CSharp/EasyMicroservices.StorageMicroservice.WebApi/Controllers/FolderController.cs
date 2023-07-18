@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using EasyMicroservices.StorageMicroservice.Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using EasyMicroservices.FileManager.Interfaces;
+using ServiceContracts;
 
 namespace EasyMicroservices.StorageMicroservice.Controllers
 {
@@ -18,7 +19,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         protected readonly IDirectoryManagerProvider _directoryManagerProvider;
         protected readonly IFileManagerProvider _fileManagerProvider;
         private readonly StorageContext _context;
-
+        
         public FolderController(StorageContext context, IDirectoryManagerProvider directoryManagerProvider, IFileManagerProvider fileManagerProvider)
         {
             _directoryManagerProvider = directoryManagerProvider;
@@ -34,30 +35,30 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         }
 
         [HttpGet]
-        public async Task<ResultContract<List<FolderEntity>>> GetAll()
+        public async Task<MessageContract<List<FolderEntity>>> GetAll()
         {
-            ResultContract<List<FolderEntity>> result = new();
+            var result = new MessageContract<List<FolderEntity>>();
             var Folders = await _context.Folders.ToListAsync();
 
 
             if (Folders.Count > 0)
             {
-                result.IsSuccessful = true;
-                result.OutputRes = Folders;
+                result.IsSuccess = true;
+                result.Result = Folders;
             }
             else
             {
-                result.IsSuccessful = false;
-                result.Message = "No directory found";
+                result.IsSuccess = false;
+                result.Error.Message = "No directory found";
             }
 
             return result;
         }
 
         [HttpPut]
-        public async Task<ResultContract<FolderEntity>> UpdateAsync(UpdateFolderContract input)
+        public async Task<MessageContract<FolderEntity>> UpdateAsync(UpdateFolderContract input)
         {
-            ResultContract<FolderEntity> result = new();
+            var result = new MessageContract<FolderEntity>();
             string webRootPath = @Directory.GetCurrentDirectory();
             string Path = input.Path.ToLower();
 
@@ -75,32 +76,32 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                     existingFolder.Name = input.Name ?? existingFolder.Name;
                     existingFolder.Path = Path ?? existingFolder.Path;
 
-                    result.OutputRes = existingFolder;
-                    result.Message = "Folder updated successfully";
-                    result.IsSuccessful = true;
+                    result.Result = existingFolder;
+                    result.IsSuccess = true;
 
                     await _context.SaveChangesAsync();
 
                 }
                 else
                 {
-                    result.IsSuccessful = false;
-                    result.Message = "Folder doesn't exist";
+                    result.IsSuccess = false;
+                    result.Error.Message = "Folder doesn't exist";
                 }
             }
             else
             {
-                result.IsSuccessful = false;
-                result.Message = "Your folder path isn't valid.";
+                result.IsSuccess = false;
+                result.Error.Message = "Your folder path isn't valid.";
             }
 
             return result;
         }
 
         [HttpPost]
-        public async Task<ResultContract<FolderEntity>> AddAsync(AddFolderContract input)
+        public async Task<MessageContract<FolderEntity>> AddAsync(AddFolderContract input)
         {
-            ResultContract<FolderEntity> result = new();
+            var result = new MessageContract<FolderEntity>();
+            
             string Path = input.Path.ToLower();
 
             if (Regex.IsMatch(Path, @"^[a-zA-Z]+$"))
@@ -124,29 +125,28 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                     await _directoryManagerProvider.CreateDirectoryAsync(PathToFullPath(Path));
                     await _fileManagerProvider.CreateFileAsync(_directoryManagerProvider.PathProvider.Combine(PathToFullPath(Path), ".gitkeep"));
 
-                    result.OutputRes = AddedFolder.Entity;
-                    result.Message = "Folder created successfully";
-                    result.IsSuccessful = true;
+                    result.Result = AddedFolder.Entity;
+                    result.IsSuccess = true;
                 }
                 else
                 {
-                    result.IsSuccessful = false;
-                    result.Message = "Folder already exists";
+                    result.IsSuccess = false;
+                    result.Error.Message = "Folder already exists";
                 }
             }
             else
             {
-                result.IsSuccessful = false;
-                result.Message = "Your folder path isn't valid.";
+                result.IsSuccess = false;
+                result.Error.Message = "Your folder path isn't valid.";
             }
 
             return result;
         }
 
         [HttpDelete]
-        public async Task<ResultContract<object>> DeleteAsync(long Id)
+        public async Task<MessageContract> DeleteAsync(long Id)
         {
-            ResultContract<object> result = new();
+            var result = new MessageContract();
 
             var entityToDelete = await _context.Folders.FindAsync(Id);
 
@@ -168,13 +168,12 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
 
                 await _context.SaveChangesAsync();
 
-                result.IsSuccessful = true;
-                result.Message = "Folder deleted successfully";
+                result.IsSuccess = true;
             }
             else
             {
-                result.IsSuccessful = false;
-                result.Message = "Folder not found";
+                result.IsSuccess = false;
+                result.Error.Message = "Folder not found";
             }
 
             return result;

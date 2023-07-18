@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO;
 using EasyMicroservices.FileManager.Interfaces;
+using ServiceContracts;
 
 namespace EasyMicroservices.StorageMicroservice.Controllers
 {
@@ -38,24 +39,26 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
 
 
         [HttpPost("AddFileAsync")]
-        public async Task<ResultContract<object>> AddSingleFileAsync([FromForm] AddFileContract input)
+        public async Task<MessageContract<object>> AddSingleFileAsync([FromForm] AddFileContract input)
         {
 
-            ResultContract<object> Result = new();
-            Result.IsSuccessful = true;
+            var result = new MessageContract<object>
+            {
+                IsSuccess = true
+            };
 
             if (input.File == null || input.File.Length == 0)
             {
-                Result.IsSuccessful = false;
-                Result.Message = "File is empty.";
+                result.IsSuccess = false;
+                result.Error.Message = "File is empty.";
             } else
             {
                 var FileExtension = Path.GetExtension(input.File.FileName);
 
                 if (!Constants.AllowedFileExtensions.Contains(FileExtension))
                 {
-                    Result.IsSuccessful = false;
-                    Result.Message = $"The {FileExtension} file type is not valid. It must be:\n{string.Join(' ', Constants.AllowedFileExtensions)}";
+                    result.IsSuccess = false;
+                    result.Error.Message = $"The {FileExtension} file type is not valid. It must be:\n{string.Join(' ', Constants.AllowedFileExtensions)}";
                 } else
                 {
                     var GuId = Guid.NewGuid();
@@ -101,8 +104,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                         await _context.Files.AddAsync(newFile);
                         await _context.SaveChangesAsync();
 
-                        Result.Message = "File uploaded successfully.";
-                        Result.OutputRes = new
+                        result.Result = new
                         {
                             newFile.CreationDateTime,
                             newFile.Name,
@@ -118,8 +120,8 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
 
                     } else
                     {
-                        Result.IsSuccessful = false;
-                        Result.Message = $"FolderId must not be empty or unavailable when Root folder is not available in database";
+                        result.IsSuccess = false;
+                        result.Error.Message = $"FolderId must not be empty or unavailable when Root folder is not available in database";
                     }
 
 
@@ -127,23 +129,25 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
 
             }
 
-            return Result;
+            return result;
 
         }
 
         [HttpDelete]
-        public async Task<ResultContract<FileEntity>> DeleteFileByGuidAsync(string guid, string? password)
+        public async Task<MessageContract<FileEntity>> DeleteFileByGuidAsync(string guid, string? password)
         {
-            var Result = new ResultContract<FileEntity>();
-            Result.IsSuccessful = true;
+            var Result = new MessageContract<FileEntity>
+            {
+                IsSuccess = true
+            };
 
             string Password = password ?? string.Empty;
             var file = _context.Files.Where(o => o.Guid.ToString() == guid).FirstOrDefault();
 
             if (file == null)
             {
-                Result.IsSuccessful = false;
-                Result.Message = "File not found";
+                Result.IsSuccess = false;
+                Result.Error.Message = "File not found";
             }
             else
             {
@@ -152,19 +156,18 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                     var filePath = NameToFullPath(file.Path);
                     if (await _fileManagerProvider.IsExistFileAsync(filePath))
                     {
-                        await _directoryManagerProvider.DeleteDirectoryAsync(filePath);
+                        await _fileManagerProvider.DeleteFileAsync(filePath);
 
                         _context.Files.Remove(file);
                         await _context.SaveChangesAsync();
 
-                        Result.OutputRes = file;
-                        Result.Message = "Sucessfully deleted.";
+                        Result.Result = file;
                     }
                 }
                 else
                 {
-                    Result.IsSuccessful = false;
-                    Result.Message = "Password is not correct";
+                    Result.IsSuccess = false;
+                    Result.Error.Message = "Password is not correct";
                 }
             }
 
@@ -174,7 +177,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
 
 
         [HttpDelete]
-        public async Task<ResultContract<FileEntity>> DeleteFileByIdAsync(long id, string? password)
+        public async Task<MessageContract<FileEntity>> DeleteFileByIdAsync(long id, string? password)
         {
             var file = _context.Files.Where(o => o.Id == id).FirstOrDefault();
 
