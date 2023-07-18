@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace EasyMicroservices.StorageMicroservice.Contracts
 {
-    public class AddFolderDom
+    public class AddFolderContract
     {
-        public AddFolderDom()
+        public AddFolderContract()
         {
             Name = string.Empty;
             Path = string.Empty;
@@ -22,9 +22,9 @@ namespace EasyMicroservices.StorageMicroservice.Contracts
         public string Path { get; set; }
     }
 
-    public class UpdateFolderDom
+    public class UpdateFolderContract
     {
-        public UpdateFolderDom()
+        public UpdateFolderContract()
         {
             Name = string.Empty;
             Path = string.Empty;

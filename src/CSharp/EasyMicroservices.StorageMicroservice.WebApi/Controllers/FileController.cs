@@ -8,6 +8,7 @@ using EasyMicroservices.StorageMicroservice.Database.Contexts;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO;
+using EasyMicroservices.FileManager.Interfaces;
 
 namespace EasyMicroservices.StorageMicroservice.Controllers
 {
@@ -16,27 +17,31 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
     public class FileController : ControllerBase
     {
 
+        protected readonly IDirectoryManagerProvider _directoryManagerProvider;
+        private readonly IFileManagerProvider _fileManagerProvider;
         private readonly StorageContext _context;
 
-        public FileController(StorageContext context)
+        public FileController(StorageContext context, IDirectoryManagerProvider directoryManagerProvider, IFileManagerProvider fileManagerProvider)
         {
+            _directoryManagerProvider = directoryManagerProvider;
+            _fileManagerProvider = fileManagerProvider;
             _context = context;
         }
 
         private string NameToFullPath(string FilePath)
         {
             string webRootPath = @Directory.GetCurrentDirectory();
-            string directoryPath = Path.Combine(webRootPath, "wwwroot", Constants.RootAddress, FilePath); 
+            string directoryPath = _directoryManagerProvider.PathProvider.Combine(webRootPath, "wwwroot", Constants.RootAddress, FilePath); 
             return directoryPath;
         }
 
 
 
         [HttpPost("AddFileAsync")]
-        public async Task<ResultContract> AddSingleFileAsync([FromForm] AddFileDom input)
+        public async Task<ResultContract<object>> AddSingleFileAsync([FromForm] AddFileContract input)
         {
 
-            ResultContract Result = new();
+            ResultContract<object> Result = new();
             Result.IsSuccessful = true;
 
             if (input.File == null || input.File.Length == 0)
@@ -55,12 +60,12 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                 {
                     var GuId = Guid.NewGuid();
 
-                    bool isGuIdUnique = _context.Files.Where(f => f.Guid == GuId.ToString()).Count() > 0;
+                    bool isGuIdUnique = _context.Files.Where(f => f.Guid.ToString() == GuId.ToString()).Count() > 0;
                     
                     while (isGuIdUnique)
                     {
                         GuId = Guid.NewGuid();
-                        isGuIdUnique = _context.Files.Where(f => f.Guid == GuId.ToString()).Count() > 0;
+                        isGuIdUnique = _context.Files.Where(f => f.Guid.ToString() == GuId.ToString()).Count() > 0;
                     }
 
                     var FileName = $"{GuId}{FileExtension}";
@@ -81,7 +86,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                         var newFile = new FileEntity {
                             CreationDateTime = DateTime.Now,
                             Name = input.File.FileName ?? "default",
-                            Guid = GuId.ToString(),
+                            Guid = GuId,
                             ContentType = input.File.ContentType ?? "text/plain",
                             Length = input.File.Length,
                             Extension = FileExtension,
@@ -108,7 +113,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                             newFile.FolderId,
                             newFile.Password,
                             newFile.Path,
-                            DownloadLink = GenerateDownloadLink(HttpContext, newFile.Guid, newFile.Password),
+                            DownloadLink = GenerateDownloadLink(HttpContext, newFile.Guid.ToString(), newFile.Password),
                         };
 
                     } else
@@ -127,13 +132,13 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         }
 
         [HttpDelete]
-        public async Task<ResultContract> DeleteFileByGuidAsync(string guid, string? password)
+        public async Task<ResultContract<FileEntity>> DeleteFileByGuidAsync(string guid, string? password)
         {
-            var Result = new ResultContract();
+            var Result = new ResultContract<FileEntity>();
             Result.IsSuccessful = true;
 
             string Password = password ?? string.Empty;
-            var file = _context.Files.Where(o => o.Guid == guid).FirstOrDefault();
+            var file = _context.Files.Where(o => o.Guid.ToString() == guid).FirstOrDefault();
 
             if (file == null)
             {
@@ -145,9 +150,9 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                 if (file.Password == password)
                 {
                     var filePath = NameToFullPath(file.Path);
-                    if (System.IO.File.Exists(filePath))
+                    if (await _fileManagerProvider.IsExistFileAsync(filePath))
                     {
-                        System.IO.File.Delete(filePath);
+                        await _directoryManagerProvider.DeleteDirectoryAsync(filePath);
 
                         _context.Files.Remove(file);
                         await _context.SaveChangesAsync();
@@ -169,11 +174,11 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
 
 
         [HttpDelete]
-        public async Task<ResultContract> DeleteFileByIdAsync(long id, string? password)
+        public async Task<ResultContract<FileEntity>> DeleteFileByIdAsync(long id, string? password)
         {
             var file = _context.Files.Where(o => o.Id == id).FirstOrDefault();
 
-            return await DeleteFileByGuidAsync(file.Guid, password);
+            return await DeleteFileByGuidAsync(file.Guid.ToString(), password);
         }
 
         private static string GenerateDownloadLink(HttpContext httpContext, string fileGuid, string Password)
@@ -183,9 +188,9 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         }
 
         [HttpGet("{fileGuid}")]
-        public IActionResult DownloadFile(string fileGuid, [FromQuery] string? password)
+        public async Task<IActionResult> DownloadFile(string fileGuid, [FromQuery] string? password)
         {
-            var file = _context.Files.Where(o => o.Guid == fileGuid).FirstOrDefault();
+            var file = _context.Files.Where(o => o.Guid.ToString() == fileGuid).FirstOrDefault();
             if (file == null)
             {
                 return NotFound();
@@ -195,10 +200,10 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                 {
                     var filePath = NameToFullPath(file.Path);
 
-                    if (!System.IO.File.Exists(filePath))
+                    if (!await _fileManagerProvider.IsExistFileAsync(filePath))
                         return NotFound();
-
-                    var fileBytes = System.IO.File.ReadAllBytes(filePath);
+                    
+                    var fileBytes = await _fileManagerProvider.ReadAllBytesAsync(filePath);
 
                     return File(fileBytes, "application/octet-stream", file.Name);
                 } else
@@ -210,11 +215,11 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         }
 
         [HttpGet("{FileId}")]
-        public IActionResult DownloadFileWithId(long FileId, [FromQuery] string? password)
+        public async Task<IActionResult> DownloadFileWithIdAsync(long FileId, [FromQuery] string? password)
         {
             var file = _context.Files.Where(o => o.Id == FileId).FirstOrDefault();
 
-            return DownloadFile(file.Guid, password);
+            return await DownloadFile(file.Guid.ToString(), password);
         }
 
 

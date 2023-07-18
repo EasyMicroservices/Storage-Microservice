@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EasyMicroservices.StorageMicroservice.Contracts
 {
-    public class AddFileDom
+    public class AddFileContract
     {
         [Required]
         public IFormFile File { get; set; }
