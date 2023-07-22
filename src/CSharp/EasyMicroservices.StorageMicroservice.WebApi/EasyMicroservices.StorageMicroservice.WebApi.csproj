@@ -18,9 +18,5 @@
   <ItemGroup>
     <ProjectReference Include="..\EasyMicroservices.StorageMicroservice.StartUp\EasyMicroservices.StorageMicroservice.StartUp.csproj" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="wwwroot\storage\" />
-  </ItemGroup>
 
 </Project>
