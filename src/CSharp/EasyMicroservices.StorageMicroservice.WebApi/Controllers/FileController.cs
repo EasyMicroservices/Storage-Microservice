@@ -32,7 +32,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         private string NameToFullPath(string FilePath)
         {
             string webRootPath = @Directory.GetCurrentDirectory();
-            string directoryPath = _directoryManagerProvider.PathProvider.Combine(webRootPath, "wwwroot", Constants.RootAddress, FilePath); 
+            string directoryPath = _directoryManagerProvider.PathProvider.Combine(webRootPath, "wwwroot", Constants.RootAddress, FilePath);
             return directoryPath;
         }
 
@@ -50,21 +50,25 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             if (input.File == null || input.File.Length == 0)
             {
                 result.IsSuccess = false;
+                result.Error = new ErrorContract();
                 result.Error.Message = "File is empty.";
-            } else
+            }
+            else
             {
                 var FileExtension = Path.GetExtension(input.File.FileName);
 
                 if (!Constants.AllowedFileExtensions.Contains(FileExtension))
                 {
                     result.IsSuccess = false;
+                    result.Error = new ErrorContract();
                     result.Error.Message = $"The {FileExtension} file type is not valid. It must be:\n{string.Join(' ', Constants.AllowedFileExtensions)}";
-                } else
+                }
+                else
                 {
                     var GuId = Guid.NewGuid();
 
                     bool isGuIdUnique = _context.Files.Where(f => f.Guid.ToString() == GuId.ToString()).Count() > 0;
-                    
+
                     while (isGuIdUnique)
                     {
                         GuId = Guid.NewGuid();
@@ -78,7 +82,8 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                     if (input.FolderId == null || input.FolderId == 0)
                     {
                         Folder = _context.Folders.Where(o => o.Id == 1).FirstOrDefault();
-                    } else
+                    }
+                    else
                     {
                         Folder = _context.Folders.Where(o => o.Id == input.FolderId).FirstOrDefault();
                     }
@@ -86,7 +91,8 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                     if (Folder != null)
                     {
 
-                        var newFile = new FileEntity {
+                        var newFile = new FileEntity
+                        {
                             CreationDateTime = DateTime.Now,
                             Name = input.File.FileName ?? "default",
                             Guid = GuId,
@@ -118,9 +124,11 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                             DownloadLink = GenerateDownloadLink(HttpContext, newFile.Guid.ToString(), newFile.Password),
                         };
 
-                    } else
+                    }
+                    else
                     {
                         result.IsSuccess = false;
+                        result.Error = new ErrorContract();
                         result.Error.Message = $"FolderId must not be empty or unavailable when Root folder is not available in database";
                     }
 
@@ -147,6 +155,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             if (file == null)
             {
                 Result.IsSuccess = false;
+                Result.Error = new ErrorContract();
                 Result.Error.Message = "File not found";
             }
             else
@@ -179,6 +188,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                 else
                 {
                     Result.IsSuccess = false;
+                    Result.Error = new ErrorContract();
                     Result.Error.Message = "Password is not correct";
                 }
             }
@@ -209,19 +219,21 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             if (file == null)
             {
                 return NotFound();
-            } else
+            }
+            else
             {
-                if(file.Password == password)
+                if (file.Password == password)
                 {
                     var filePath = NameToFullPath(file.Path);
 
                     if (!await _fileManagerProvider.IsExistFileAsync(filePath))
                         return NotFound();
-                    
+
                     var fileBytes = await _fileManagerProvider.ReadAllBytesAsync(filePath);
 
                     return File(fileBytes, "application/octet-stream", file.Name);
-                } else
+                }
+                else
                 {
                     return Unauthorized();
                 }
