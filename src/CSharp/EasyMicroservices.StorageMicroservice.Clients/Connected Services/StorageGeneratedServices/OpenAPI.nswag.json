@@ -228,17 +228,16 @@
         }
       }
     },
-    "/api/File/GetImage/{fileGuid}": {
+    "/api/File/GenerateDownloadUrl": {
       "get": {
         "tags": [
           "File"
         ],
-        "operationId": "GetImage",
+        "operationId": "GenerateDownloadUrl",
         "parameters": [
           {
             "name": "fileGuid",
-            "in": "path",
-            "required": true,
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -253,67 +252,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/File/GetImageById/{fileId}": {
-      "get": {
-        "tags": [
-          "File"
-        ],
-        "operationId": "GetImageById",
-        "parameters": [
-          {
-            "name": "fileId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
-          },
-          {
-            "name": "password",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/File/ImageBase64/ImageBase64": {
-      "get": {
-        "tags": [
-          "File"
-        ],
-        "operationId": "ImageBase64",
-        "parameters": [
-          {
-            "name": "data",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "contentType",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
           }
         }
       }
