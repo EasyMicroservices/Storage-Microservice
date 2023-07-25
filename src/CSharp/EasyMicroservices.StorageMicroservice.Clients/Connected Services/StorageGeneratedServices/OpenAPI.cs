@@ -57,18 +57,18 @@ namespace Storage.GeneratedServices
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<AddFileResultContractMessageContract> AddFileAsync(FileParameter file, string password, long? folderId)
+        public virtual System.Threading.Tasks.Task<FileContractMessageContract> UploadFileAsync(FileParameter file, long? folderId, string uniqueIdentity)
         {
-            return AddFileAsync(file, password, folderId, System.Threading.CancellationToken.None);
+            return UploadFileAsync(file, folderId, uniqueIdentity, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<AddFileResultContractMessageContract> AddFileAsync(FileParameter file, string password, long? folderId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<FileContractMessageContract> UploadFileAsync(FileParameter file, long? folderId, string uniqueIdentity, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/AddSingleFile/AddFileAsync");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/UploadFile");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -91,18 +91,18 @@ namespace Storage.GeneratedServices
                         content_.Add(content_file_, "File", file.FileName ?? "File");
                     }
 
-                    if (password == null)
-                        throw new System.ArgumentNullException("password");
-                    else
-                    {
-                        content_.Add(new System.Net.Http.StringContent(ConvertToString(password, System.Globalization.CultureInfo.InvariantCulture)), "Password");
-                    }
-
                     if (folderId == null)
                         throw new System.ArgumentNullException("folderId");
                     else
                     {
                         content_.Add(new System.Net.Http.StringContent(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)), "FolderId");
+                    }
+
+                    if (uniqueIdentity == null)
+                        throw new System.ArgumentNullException("uniqueIdentity");
+                    else
+                    {
+                        content_.Add(new System.Net.Http.StringContent(ConvertToString(uniqueIdentity, System.Globalization.CultureInfo.InvariantCulture)), "UniqueIdentity");
                     }
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
@@ -131,7 +131,7 @@ namespace Storage.GeneratedServices
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<AddFileResultContractMessageContract>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContractMessageContract>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -160,21 +160,21 @@ namespace Storage.GeneratedServices
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<DeleteFileResultContractMessageContract> DeleteFileByGuidAsync(string guid, string password)
+        public virtual System.Threading.Tasks.Task<MessageContract> DeleteFileByPasswordAsync(long? fileId, string password)
         {
-            return DeleteFileByGuidAsync(guid, password, System.Threading.CancellationToken.None);
+            return DeleteFileByPasswordAsync(fileId, password, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<DeleteFileResultContractMessageContract> DeleteFileByGuidAsync(string guid, string password, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<MessageContract> DeleteFileByPasswordAsync(long? fileId, string password, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/DeleteFileByGuid?");
-            if (guid != null)
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/DeleteFileByPassword?");
+            if (fileId != null)
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("guid") + "=").Append(System.Uri.EscapeDataString(ConvertToString(guid, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("fileId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(fileId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             if (password != null)
             {
@@ -214,7 +214,7 @@ namespace Storage.GeneratedServices
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<DeleteFileResultContractMessageContract>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<MessageContract>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -243,18 +243,18 @@ namespace Storage.GeneratedServices
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<DeleteFileResultContractMessageContract> DeleteFileByIdAsync(long? id, string password)
+        public virtual System.Threading.Tasks.Task DownloadFileWithIdAsync(long? id, string password)
         {
-            return DeleteFileByIdAsync(id, password, System.Threading.CancellationToken.None);
+            return DownloadFileWithIdAsync(id, password, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<DeleteFileResultContractMessageContract> DeleteFileByIdAsync(long? id, string password, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task DownloadFileWithIdAsync(long? id, string password, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/DeleteFileById?");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/DownloadFileWithId?");
             if (id != null)
             {
                 urlBuilder_.Append(System.Uri.EscapeDataString("id") + "=").Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
@@ -271,7 +271,80 @@ namespace Storage.GeneratedServices
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<FileContractMessageContract> GetByIdAsync(long? id)
+        {
+            return GetByIdAsync(id, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<FileContractMessageContract> GetByIdAsync(long? id, System.Threading.CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/GetById?");
+            if (id != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("id") + "=").Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            urlBuilder_.Length--;
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -297,7 +370,7 @@ namespace Storage.GeneratedServices
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<DeleteFileResultContractMessageContract>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContractMessageContract>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -326,27 +399,18 @@ namespace Storage.GeneratedServices
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task DownloadFileAsync(string fileGuid, string password)
+        public virtual System.Threading.Tasks.Task<FileContractMessageContract> GetByUniqueIdentityAsync(GetUniqueIdentityRequest body)
         {
-            return DownloadFileAsync(fileGuid, password, System.Threading.CancellationToken.None);
+            return GetByUniqueIdentityAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task DownloadFileAsync(string fileGuid, string password, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<FileContractMessageContract> GetByUniqueIdentityAsync(GetUniqueIdentityRequest body, System.Threading.CancellationToken cancellationToken)
         {
-            if (fileGuid == null)
-                throw new System.ArgumentNullException("fileGuid");
-
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/DownloadFile/{fileGuid}?");
-            urlBuilder_.Replace("{fileGuid}", System.Uri.EscapeDataString(ConvertToString(fileGuid, System.Globalization.CultureInfo.InvariantCulture)));
-            if (password != null)
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("password") + "=").Append(System.Uri.EscapeDataString(ConvertToString(password, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            urlBuilder_.Length--;
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/GetByUniqueIdentity");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -354,7 +418,12 @@ namespace Storage.GeneratedServices
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -379,7 +448,12 @@ namespace Storage.GeneratedServices
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            return;
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContractMessageContract>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
                         }
                         else
                         {
@@ -403,27 +477,18 @@ namespace Storage.GeneratedServices
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task DownloadFileWithIdAsync(long fileId, string password)
+        public virtual System.Threading.Tasks.Task<Int64MessageContract> AddAsync(AddFileRequestContract body)
         {
-            return DownloadFileWithIdAsync(fileId, password, System.Threading.CancellationToken.None);
+            return AddAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task DownloadFileWithIdAsync(long fileId, string password, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Int64MessageContract> AddAsync(AddFileRequestContract body, System.Threading.CancellationToken cancellationToken)
         {
-            if (fileId == null)
-                throw new System.ArgumentNullException("fileId");
-
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/DownloadFileWithId/{FileId}?");
-            urlBuilder_.Replace("{FileId}", System.Uri.EscapeDataString(ConvertToString(fileId, System.Globalization.CultureInfo.InvariantCulture)));
-            if (password != null)
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("password") + "=").Append(System.Uri.EscapeDataString(ConvertToString(password, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            urlBuilder_.Length--;
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/Add");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -431,7 +496,12 @@ namespace Storage.GeneratedServices
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -456,7 +526,12 @@ namespace Storage.GeneratedServices
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            return;
+                            var objectResponse_ = await ReadObjectResponseAsync<Int64MessageContract>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
                         }
                         else
                         {
@@ -480,27 +555,175 @@ namespace Storage.GeneratedServices
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<string> GenerateDownloadUrlAsync(string fileGuid, string password)
+        public virtual System.Threading.Tasks.Task<FileContractMessageContract> UpdateAsync(FileContract body)
         {
-            return GenerateDownloadUrlAsync(fileGuid, password, System.Threading.CancellationToken.None);
+            return UpdateAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<string> GenerateDownloadUrlAsync(string fileGuid, string password, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<FileContractMessageContract> UpdateAsync(FileContract body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/GenerateDownloadUrl?");
-            if (fileGuid != null)
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/Update");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("fileGuid") + "=").Append(System.Uri.EscapeDataString(ConvertToString(fileGuid, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContractMessageContract>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
             }
-            if (password != null)
+            finally
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("password") + "=").Append(System.Uri.EscapeDataString(ConvertToString(password, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<MessageContract> HardDeleteByIdAsync(long? id)
+        {
+            return HardDeleteByIdAsync(id, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<MessageContract> HardDeleteByIdAsync(long? id, System.Threading.CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/HardDeleteById?");
+            if (id != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("id") + "=").Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<MessageContract>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<FileContractListMessageContract> GetAllAsync()
+        {
+            return GetAllAsync(System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<FileContractListMessageContract> GetAllAsync(System.Threading.CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/GetAll");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -534,7 +757,85 @@ namespace Storage.GeneratedServices
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContractListMessageContract>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<FileContractListMessageContract> GetAllByUniqueIdentityAsync(GetUniqueIdentityRequest body)
+        {
+            return GetAllByUniqueIdentityAsync(body, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<FileContractListMessageContract> GetAllByUniqueIdentityAsync(GetUniqueIdentityRequest body, System.Threading.CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/GetAllByUniqueIdentity");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContractListMessageContract>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1112,141 +1413,30 @@ namespace Storage.GeneratedServices
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.3.0))")]
-    public partial class AddFileResultContract : System.ComponentModel.INotifyPropertyChanged
+    public partial class AddFileRequestContract : System.ComponentModel.INotifyPropertyChanged
     {
-        private System.Guid _guid;
-        private System.DateTimeOffset _creationDateTime;
-        private string _name;
-        private string _extension;
-        private long _length;
-        private string _path;
-        private string _contentType;
-        private string _password;
-        private long _folderId;
-        private string _downloadLink;
+        private byte[] _file;
+        private long? _folderId;
+        private string _uniqueIdentity;
 
-        [Newtonsoft.Json.JsonProperty("guid", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid Guid
+        [Newtonsoft.Json.JsonProperty("file", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public byte[] File
         {
-            get { return _guid; }
+            get { return _file; }
 
             set
             {
-                if (_guid != value)
+                if (_file != value)
                 {
-                    _guid = value;
+                    _file = value;
                     RaisePropertyChanged();
                 }
             }
         }
 
-        [Newtonsoft.Json.JsonProperty("creationDateTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset CreationDateTime
-        {
-            get { return _creationDateTime; }
-
-            set
-            {
-                if (_creationDateTime != value)
-                {
-                    _creationDateTime = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Name
-        {
-            get { return _name; }
-
-            set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("extension", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Extension
-        {
-            get { return _extension; }
-
-            set
-            {
-                if (_extension != value)
-                {
-                    _extension = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("length", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long Length
-        {
-            get { return _length; }
-
-            set
-            {
-                if (_length != value)
-                {
-                    _length = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Path
-        {
-            get { return _path; }
-
-            set
-            {
-                if (_path != value)
-                {
-                    _path = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("contentType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ContentType
-        {
-            get { return _contentType; }
-
-            set
-            {
-                if (_contentType != value)
-                {
-                    _contentType = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("password", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Password
-        {
-            get { return _password; }
-
-            set
-            {
-                if (_password != value)
-                {
-                    _password = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("folderId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long FolderId
+        [Newtonsoft.Json.JsonProperty("folderId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long? FolderId
         {
             get { return _folderId; }
 
@@ -1260,78 +1450,16 @@ namespace Storage.GeneratedServices
             }
         }
 
-        [Newtonsoft.Json.JsonProperty("downloadLink", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string DownloadLink
+        [Newtonsoft.Json.JsonProperty("uniqueIdentity", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string UniqueIdentity
         {
-            get { return _downloadLink; }
+            get { return _uniqueIdentity; }
 
             set
             {
-                if (_downloadLink != value)
+                if (_uniqueIdentity != value)
                 {
-                    _downloadLink = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null)
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.3.0))")]
-    public partial class AddFileResultContractMessageContract : System.ComponentModel.INotifyPropertyChanged
-    {
-        private bool _isSuccess;
-        private ErrorContract _error;
-        private AddFileResultContract _result;
-
-        [Newtonsoft.Json.JsonProperty("isSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool IsSuccess
-        {
-            get { return _isSuccess; }
-
-            set
-            {
-                if (_isSuccess != value)
-                {
-                    _isSuccess = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("error", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public ErrorContract Error
-        {
-            get { return _error; }
-
-            set
-            {
-                if (_error != value)
-                {
-                    _error = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("result", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public AddFileResultContract Result
-        {
-            get { return _result; }
-
-            set
-            {
-                if (_result != value)
-                {
-                    _result = value;
+                    _uniqueIdentity = value;
                     RaisePropertyChanged();
                 }
             }
@@ -1380,242 +1508,6 @@ namespace Storage.GeneratedServices
                 if (_path != value)
                 {
                     _path = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null)
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.3.0))")]
-    public partial class DeleteFileResultContract : System.ComponentModel.INotifyPropertyChanged
-    {
-        private long _id;
-        private System.Guid _guid;
-        private System.DateTimeOffset _creationDateTime;
-        private string _name;
-        private string _extension;
-        private long _length;
-        private string _path;
-        private string _contentType;
-        private string _password;
-        private long _folderId;
-
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long Id
-        {
-            get { return _id; }
-
-            set
-            {
-                if (_id != value)
-                {
-                    _id = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("guid", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid Guid
-        {
-            get { return _guid; }
-
-            set
-            {
-                if (_guid != value)
-                {
-                    _guid = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("creationDateTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset CreationDateTime
-        {
-            get { return _creationDateTime; }
-
-            set
-            {
-                if (_creationDateTime != value)
-                {
-                    _creationDateTime = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Name
-        {
-            get { return _name; }
-
-            set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("extension", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Extension
-        {
-            get { return _extension; }
-
-            set
-            {
-                if (_extension != value)
-                {
-                    _extension = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("length", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long Length
-        {
-            get { return _length; }
-
-            set
-            {
-                if (_length != value)
-                {
-                    _length = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Path
-        {
-            get { return _path; }
-
-            set
-            {
-                if (_path != value)
-                {
-                    _path = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("contentType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ContentType
-        {
-            get { return _contentType; }
-
-            set
-            {
-                if (_contentType != value)
-                {
-                    _contentType = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("password", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Password
-        {
-            get { return _password; }
-
-            set
-            {
-                if (_password != value)
-                {
-                    _password = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("folderId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long FolderId
-        {
-            get { return _folderId; }
-
-            set
-            {
-                if (_folderId != value)
-                {
-                    _folderId = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null)
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.3.0))")]
-    public partial class DeleteFileResultContractMessageContract : System.ComponentModel.INotifyPropertyChanged
-    {
-        private bool _isSuccess;
-        private ErrorContract _error;
-        private DeleteFileResultContract _result;
-
-        [Newtonsoft.Json.JsonProperty("isSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool IsSuccess
-        {
-            get { return _isSuccess; }
-
-            set
-            {
-                if (_isSuccess != value)
-                {
-                    _isSuccess = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("error", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public ErrorContract Error
-        {
-            get { return _error; }
-
-            set
-            {
-                if (_error != value)
-                {
-                    _error = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        [Newtonsoft.Json.JsonProperty("result", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public DeleteFileResultContract Result
-        {
-            get { return _result; }
-
-            set
-            {
-                if (_result != value)
-                {
-                    _result = value;
                     RaisePropertyChanged();
                 }
             }
@@ -1759,6 +1651,320 @@ namespace Storage.GeneratedServices
 
         WebServiceNotWorking = 14,
 
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.3.0))")]
+    public partial class FileContract : System.ComponentModel.INotifyPropertyChanged
+    {
+        private long _id;
+        private System.DateTimeOffset _creationDateTime;
+        private string _name;
+        private string _extension;
+        private long _length;
+        private string _path;
+        private string _contentType;
+        private string _password;
+        private long _folderId;
+        private string _downloadLink;
+        private string _uniqueIdentity;
+
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long Id
+        {
+            get { return _id; }
+
+            set
+            {
+                if (_id != value)
+                {
+                    _id = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("creationDateTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset CreationDateTime
+        {
+            get { return _creationDateTime; }
+
+            set
+            {
+                if (_creationDateTime != value)
+                {
+                    _creationDateTime = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name
+        {
+            get { return _name; }
+
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("extension", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Extension
+        {
+            get { return _extension; }
+
+            set
+            {
+                if (_extension != value)
+                {
+                    _extension = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("length", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long Length
+        {
+            get { return _length; }
+
+            set
+            {
+                if (_length != value)
+                {
+                    _length = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Path
+        {
+            get { return _path; }
+
+            set
+            {
+                if (_path != value)
+                {
+                    _path = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("contentType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ContentType
+        {
+            get { return _contentType; }
+
+            set
+            {
+                if (_contentType != value)
+                {
+                    _contentType = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("password", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Password
+        {
+            get { return _password; }
+
+            set
+            {
+                if (_password != value)
+                {
+                    _password = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("folderId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long FolderId
+        {
+            get { return _folderId; }
+
+            set
+            {
+                if (_folderId != value)
+                {
+                    _folderId = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("downloadLink", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string DownloadLink
+        {
+            get { return _downloadLink; }
+
+            set
+            {
+                if (_downloadLink != value)
+                {
+                    _downloadLink = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("uniqueIdentity", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string UniqueIdentity
+        {
+            get { return _uniqueIdentity; }
+
+            set
+            {
+                if (_uniqueIdentity != value)
+                {
+                    _uniqueIdentity = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.3.0))")]
+    public partial class FileContractListMessageContract : System.ComponentModel.INotifyPropertyChanged
+    {
+        private bool _isSuccess;
+        private ErrorContract _error;
+        private System.Collections.Generic.ICollection<FileContract> _result;
+
+        [Newtonsoft.Json.JsonProperty("isSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsSuccess
+        {
+            get { return _isSuccess; }
+
+            set
+            {
+                if (_isSuccess != value)
+                {
+                    _isSuccess = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("error", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ErrorContract Error
+        {
+            get { return _error; }
+
+            set
+            {
+                if (_error != value)
+                {
+                    _error = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("result", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<FileContract> Result
+        {
+            get { return _result; }
+
+            set
+            {
+                if (_result != value)
+                {
+                    _result = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.3.0))")]
+    public partial class FileContractMessageContract : System.ComponentModel.INotifyPropertyChanged
+    {
+        private bool _isSuccess;
+        private ErrorContract _error;
+        private FileContract _result;
+
+        [Newtonsoft.Json.JsonProperty("isSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsSuccess
+        {
+            get { return _isSuccess; }
+
+            set
+            {
+                if (_isSuccess != value)
+                {
+                    _isSuccess = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("error", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ErrorContract Error
+        {
+            get { return _error; }
+
+            set
+            {
+                if (_error != value)
+                {
+                    _error = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("result", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FileContract Result
+        {
+            get { return _result; }
+
+            set
+            {
+                if (_result != value)
+                {
+                    _result = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.3.0))")]
@@ -1940,6 +2146,98 @@ namespace Storage.GeneratedServices
 
         [Newtonsoft.Json.JsonProperty("result", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public FolderContract Result
+        {
+            get { return _result; }
+
+            set
+            {
+                if (_result != value)
+                {
+                    _result = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.3.0))")]
+    public partial class GetUniqueIdentityRequest : System.ComponentModel.INotifyPropertyChanged
+    {
+        private string _uniqueIdentity;
+
+        [Newtonsoft.Json.JsonProperty("uniqueIdentity", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string UniqueIdentity
+        {
+            get { return _uniqueIdentity; }
+
+            set
+            {
+                if (_uniqueIdentity != value)
+                {
+                    _uniqueIdentity = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.3.0))")]
+    public partial class Int64MessageContract : System.ComponentModel.INotifyPropertyChanged
+    {
+        private bool _isSuccess;
+        private ErrorContract _error;
+        private long _result;
+
+        [Newtonsoft.Json.JsonProperty("isSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsSuccess
+        {
+            get { return _isSuccess; }
+
+            set
+            {
+                if (_isSuccess != value)
+                {
+                    _isSuccess = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("error", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ErrorContract Error
+        {
+            get { return _error; }
+
+            set
+            {
+                if (_error != value)
+                {
+                    _error = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("result", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long Result
         {
             get { return _result; }
 

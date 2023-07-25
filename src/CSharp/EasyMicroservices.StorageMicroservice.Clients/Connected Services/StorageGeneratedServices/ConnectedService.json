@@ -8,7 +8,7 @@
     "ServiceName": "StorageGeneratedServices",
     "AcceptAllUntrustedCertificates": true,
     "GeneratedFileName": "OpenAPI",
-    "Endpoint": "https://localhost:5007/swagger/v1/swagger.json",
+    "Endpoint": "https://localhost:7186/swagger/v1/swagger.json",
     "GeneratedFileNamePrefix": null,
     "GenerateCSharpClient": true,
     "GenerateTypeScriptClient": false,
