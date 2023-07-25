@@ -10,7 +10,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="EasyMicroservices.Mapper.CompileTimeMapper" Version="0.0.0.4" />
+    <PackageReference Include="EasyMicroservices.Mapper.CompileTimeMapper" Version="0.0.0.5" />
   </ItemGroup>
   
   <ItemGroup>

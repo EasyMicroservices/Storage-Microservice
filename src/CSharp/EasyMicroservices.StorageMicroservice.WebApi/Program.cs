@@ -65,7 +65,8 @@ namespace EasyMicroservices.StorageMicroservice.WebApi
             app.MapControllers();
 
             var context = new StorageContext(new DatabaseBuilder());
-            await context.Database.MigrateAsync();
+            //await context.Database.MigrateAsync();
+            await context.Database.EnsureCreatedAsync();
             await context.DisposeAsync();
 
             //CreateDatabase();

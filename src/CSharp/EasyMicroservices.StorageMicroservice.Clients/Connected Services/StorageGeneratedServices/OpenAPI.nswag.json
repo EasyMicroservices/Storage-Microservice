@@ -5,12 +5,12 @@
     "version": "1.0"
   },
   "paths": {
-    "/api/File/AddSingleFile/AddFileAsync": {
+    "/api/File/UploadFile": {
       "post": {
         "tags": [
           "File"
         ],
-        "operationId": "AddFileAsync",
+        "operationId": "UploadFile",
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -24,15 +24,13 @@
                     "type": "string",
                     "format": "binary"
                   },
-                  "Password": {
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 5
-                  },
                   "FolderId": {
                     "title": "Nullable<Int64>",
                     "type": "integer",
                     "format": "int64"
+                  },
+                  "UniqueIdentity": {
+                    "type": "string"
                   }
                 }
               },
@@ -40,10 +38,10 @@
                 "File": {
                   "style": "form"
                 },
-                "Password": {
+                "FolderId": {
                   "style": "form"
                 },
-                "FolderId": {
+                "UniqueIdentity": {
                   "style": "form"
                 }
               }
@@ -56,17 +54,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/AddFileResultContractMessageContract"
+                  "$ref": "#/components/schemas/FileContractMessageContract"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AddFileResultContractMessageContract"
+                  "$ref": "#/components/schemas/FileContractMessageContract"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AddFileResultContractMessageContract"
+                  "$ref": "#/components/schemas/FileContractMessageContract"
                 }
               }
             }
@@ -74,18 +72,19 @@
         }
       }
     },
-    "/api/File/DeleteFileByGuid": {
+    "/api/File/DeleteFileByPassword": {
       "delete": {
         "tags": [
           "File"
         ],
-        "operationId": "DeleteFileByGuid",
+        "operationId": "DeleteFileByPassword",
         "parameters": [
           {
-            "name": "guid",
+            "name": "fileId",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -102,17 +101,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeleteFileResultContractMessageContract"
+                  "$ref": "#/components/schemas/MessageContract"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeleteFileResultContractMessageContract"
+                  "$ref": "#/components/schemas/MessageContract"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeleteFileResultContractMessageContract"
+                  "$ref": "#/components/schemas/MessageContract"
                 }
               }
             }
@@ -120,12 +119,12 @@
         }
       }
     },
-    "/api/File/DeleteFileById": {
-      "delete": {
+    "/api/File/DownloadFileWithId": {
+      "get": {
         "tags": [
           "File"
         ],
-        "operationId": "DeleteFileById",
+        "operationId": "DownloadFileWithId",
         "parameters": [
           {
             "name": "id",
@@ -145,21 +144,44 @@
         ],
         "responses": {
           "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/File/GetById": {
+      "get": {
+        "tags": [
+          "File"
+        ],
+        "operationId": "GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
             "description": "Success",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeleteFileResultContractMessageContract"
+                  "$ref": "#/components/schemas/FileContractMessageContract"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeleteFileResultContractMessageContract"
+                  "$ref": "#/components/schemas/FileContractMessageContract"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeleteFileResultContractMessageContract"
+                  "$ref": "#/components/schemas/FileContractMessageContract"
                 }
               }
             }
@@ -167,86 +189,166 @@
         }
       }
     },
-    "/api/File/DownloadFile/{fileGuid}": {
+    "/api/File/GetByUniqueIdentity": {
       "get": {
         "tags": [
           "File"
         ],
-        "operationId": "DownloadFile",
-        "parameters": [
-          {
-            "name": "fileGuid",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "password",
-            "in": "query",
-            "schema": {
-              "type": "string"
+        "operationId": "GetByUniqueIdentity",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUniqueIdentityRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUniqueIdentityRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUniqueIdentityRequest"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/api/File/DownloadFileWithId/{FileId}": {
-      "get": {
+    "/api/File/Add": {
+      "post": {
         "tags": [
           "File"
         ],
-        "operationId": "DownloadFileWithId",
+        "operationId": "Add",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddFileRequestContract"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddFileRequestContract"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddFileRequestContract"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Int64MessageContract"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Int64MessageContract"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Int64MessageContract"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/File/Update": {
+      "post": {
+        "tags": [
+          "File"
+        ],
+        "operationId": "UpdatePOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileContract"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileContract"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileContract"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/File/HardDeleteById": {
+      "delete": {
+        "tags": [
+          "File"
+        ],
+        "operationId": "HardDeleteById",
         "parameters": [
           {
-            "name": "FileId",
-            "in": "path",
-            "required": true,
+            "name": "id",
+            "in": "query",
             "schema": {
               "type": "integer",
               "format": "int64"
-            }
-          },
-          {
-            "name": "password",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/File/GenerateDownloadUrl": {
-      "get": {
-        "tags": [
-          "File"
-        ],
-        "operationId": "GenerateDownloadUrl",
-        "parameters": [
-          {
-            "name": "fileGuid",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "password",
-            "in": "query",
-            "schema": {
-              "type": "string"
             }
           }
         ],
@@ -256,17 +358,96 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/MessageContract"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/MessageContract"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/MessageContract"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/File/GetAll": {
+      "get": {
+        "tags": [
+          "File"
+        ],
+        "operationId": "GetAll",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractListMessageContract"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractListMessageContract"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractListMessageContract"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/File/GetAllByUniqueIdentity": {
+      "get": {
+        "tags": [
+          "File"
+        ],
+        "operationId": "GetAllByUniqueIdentity",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUniqueIdentityRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUniqueIdentityRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUniqueIdentityRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractListMessageContract"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractListMessageContract"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractListMessageContract"
                 }
               }
             }
@@ -279,7 +460,7 @@
         "tags": [
           "Folder"
         ],
-        "operationId": "GetAll",
+        "operationId": "GetAll2",
         "responses": {
           "200": {
             "description": "Success",
@@ -309,7 +490,7 @@
         "tags": [
           "Folder"
         ],
-        "operationId": "Update",
+        "operationId": "UpdatePUT",
         "requestBody": {
           "content": {
             "application/json": {
@@ -358,7 +539,7 @@
         "tags": [
           "Folder"
         ],
-        "operationId": "Add",
+        "operationId": "Add2",
         "requestBody": {
           "content": {
             "application/json": {
@@ -445,65 +626,26 @@
   },
   "components": {
     "schemas": {
-      "AddFileResultContract": {
+      "AddFileRequestContract": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "file"
+        ],
         "properties": {
-          "guid": {
+          "file": {
             "type": "string",
-            "format": "uuid"
-          },
-          "creationDateTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "extension": {
-            "type": "string",
-            "nullable": true
-          },
-          "length": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "path": {
-            "type": "string",
-            "nullable": true
-          },
-          "contentType": {
-            "type": "string",
-            "nullable": true
-          },
-          "password": {
-            "type": "string",
-            "nullable": true
+            "format": "binary"
           },
           "folderId": {
+            "title": "Nullable<Int64>",
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "nullable": true
           },
-          "downloadLink": {
+          "uniqueIdentity": {
             "type": "string",
             "nullable": true
-          }
-        }
-      },
-      "AddFileResultContractMessageContract": {
-        "title": "MessageContract<AddFileResultContract>",
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "isSuccess": {
-            "type": "boolean"
-          },
-          "error": {
-            "$ref": "#/components/schemas/ErrorContract"
-          },
-          "result": {
-            "$ref": "#/components/schemas/AddFileResultContract"
           }
         }
       },
@@ -522,68 +664,6 @@
             "maxLength": 63,
             "minLength": 5,
             "nullable": true
-          }
-        }
-      },
-      "DeleteFileResultContract": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "guid": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "creationDateTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "extension": {
-            "type": "string",
-            "nullable": true
-          },
-          "length": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "path": {
-            "type": "string",
-            "nullable": true
-          },
-          "contentType": {
-            "type": "string",
-            "nullable": true
-          },
-          "password": {
-            "type": "string",
-            "nullable": true
-          },
-          "folderId": {
-            "type": "integer",
-            "format": "int64"
-          }
-        }
-      },
-      "DeleteFileResultContractMessageContract": {
-        "title": "MessageContract<DeleteFileResultContract>",
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "isSuccess": {
-            "type": "boolean"
-          },
-          "error": {
-            "$ref": "#/components/schemas/ErrorContract"
-          },
-          "result": {
-            "$ref": "#/components/schemas/DeleteFileResultContract"
           }
         }
       },
@@ -654,6 +734,93 @@
           14
         ]
       },
+      "FileContract": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "creationDateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "extension": {
+            "type": "string",
+            "nullable": true
+          },
+          "length": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "path": {
+            "type": "string",
+            "nullable": true
+          },
+          "contentType": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "folderId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "downloadLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "uniqueIdentity": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "FileContractListMessageContract": {
+        "title": "MessageContract<List`1>",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "isSuccess": {
+            "type": "boolean"
+          },
+          "error": {
+            "$ref": "#/components/schemas/ErrorContract"
+          },
+          "result": {
+            "title": "List<FileContract>",
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/FileContract"
+            }
+          }
+        }
+      },
+      "FileContractMessageContract": {
+        "title": "MessageContract<FileContract>",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "isSuccess": {
+            "type": "boolean"
+          },
+          "error": {
+            "$ref": "#/components/schemas/ErrorContract"
+          },
+          "result": {
+            "$ref": "#/components/schemas/FileContract"
+          }
+        }
+      },
       "FolderContract": {
         "type": "object",
         "additionalProperties": false,
@@ -710,6 +877,33 @@
           },
           "result": {
             "$ref": "#/components/schemas/FolderContract"
+          }
+        }
+      },
+      "GetUniqueIdentityRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "uniqueIdentity": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Int64MessageContract": {
+        "title": "MessageContract<Int64>",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "isSuccess": {
+            "type": "boolean"
+          },
+          "error": {
+            "$ref": "#/components/schemas/ErrorContract"
+          },
+          "result": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       },

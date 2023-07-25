@@ -1,14 +1,11 @@
-﻿using System.Configuration;
-using EasyMicroservices.Cores.AspCoreApi;
-using EasyMicroservices.Cores.Database.Interfaces;
-using EasyMicroservices.StorageMicroservice.Database.Entities;
+﻿using EasyMicroservices.FileManager.Interfaces;
+using EasyMicroservices.ServiceContracts;
 using EasyMicroservices.StorageMicroservice.Contracts;
-using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
 using EasyMicroservices.StorageMicroservice.Database.Contexts;
+using EasyMicroservices.StorageMicroservice.Database.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using EasyMicroservices.FileManager.Interfaces;
-using ServiceContracts;
+using System.Text.RegularExpressions;
 
 namespace EasyMicroservices.StorageMicroservice.Controllers
 {
@@ -19,7 +16,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         protected readonly IDirectoryManagerProvider _directoryManagerProvider;
         protected readonly IFileManagerProvider _fileManagerProvider;
         private readonly StorageContext _context;
-        
+
         public FolderController(StorageContext context, IDirectoryManagerProvider directoryManagerProvider, IFileManagerProvider fileManagerProvider)
         {
             _directoryManagerProvider = directoryManagerProvider;
@@ -30,8 +27,8 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         private string PathToFullPath(string name)
         {
             string webRootPath = @Directory.GetCurrentDirectory();
-            string directoryPath = _directoryManagerProvider.PathProvider.Combine(webRootPath, "wwwroot", Constants.RootAddress, name);
-            return directoryPath ?? _directoryManagerProvider.PathProvider.Combine(webRootPath, "wwwroot", Constants.RootAddress);
+            string directoryPath = _directoryManagerProvider.PathProvider.Combine(webRootPath, name);
+            return directoryPath;
         }
 
         [HttpGet]
@@ -44,7 +41,8 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             if (Folders.Count > 0)
             {
                 result.IsSuccess = true;
-                result.Result = Folders.Select(f => new FolderContract {
+                result.Result = Folders.Select(f => new FolderContract
+                {
                     Id = f.Id,
                     CreationDateTime = f.CreationDateTime,
                     Name = f.Name,
@@ -112,7 +110,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         public async Task<MessageContract<FolderContract>> AddAsync(AddFolderContract input)
         {
             var result = new MessageContract<FolderContract>();
-            
+
             string Path = input.Path.ToLower();
 
             if (Regex.IsMatch(Path, @"^[a-zA-Z]+$"))
@@ -169,7 +167,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
 
             if (entityToDelete != null)
             {
-                
+
                 var FilesInFolder = _context.Files.Where(o => o.FolderId == entityToDelete.Id);
                 if (FilesInFolder.Any())
                 {
@@ -178,7 +176,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                         _context.Files.Remove(file);
                     }
                 }
-                
+
                 await _directoryManagerProvider.DeleteDirectoryAsync(PathToFullPath(entityToDelete.Path), true);
 
                 _context.Folders.Remove(entityToDelete);
