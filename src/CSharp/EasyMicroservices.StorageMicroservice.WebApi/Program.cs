@@ -12,6 +12,9 @@ using EasyMicroservices.FileManager.Interfaces;
 using EasyMicroservices.FileManager.Providers.PathProviders;
 using EasyMicroservices.FileManager.Providers.DirectoryProviders;
 using EasyMicroservices.FileManager.Providers.FileProviders;
+using EasyMicroservices.StorageMicroservice.Database.Entities;
+using EasyMicroservices.StorageMicroservice.Contracts;
+using EasyMicroservices.StorageMicroservice.Interfaces;
 
 namespace EasyMicroservices.StorageMicroservice.WebApi
 {
@@ -45,9 +48,13 @@ namespace EasyMicroservices.StorageMicroservice.WebApi
             string webRootPath = @Directory.GetCurrentDirectory();
 
             builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped((serviceProvider) => new DependencyManager().GetContractLogic<FileEntity, AddFileRequestContract, FileContract, FileContract>());
             builder.Services.AddScoped<IDatabaseBuilder>(serviceProvider => new DatabaseBuilder());
             builder.Services.AddScoped<IDirectoryManagerProvider>(serviceProvider => new DiskDirectoryProvider(webRootPath));
             builder.Services.AddScoped<IFileManagerProvider>(serviceProvider => new DiskFileProvider(new DiskDirectoryProvider(webRootPath)));
+            builder.Services.AddScoped<IDependencyManager>(service => new DependencyManager());
+            builder.Services.AddScoped(service => new WhiteLabelManager(service, service.GetService<IDependencyManager>()));
+            builder.Services.AddTransient(serviceProvider => new StorageContext(serviceProvider.GetService<IDatabaseBuilder>()));
             //builder.Services.AddScoped<IFileManagerProvider>(serviceProvider => new FileManagerProvider());
             //builder.Services.AddScoped<IDirectoryManagerProvider, kc>();
 
@@ -64,12 +71,18 @@ namespace EasyMicroservices.StorageMicroservice.WebApi
             app.UseAuthorization();
             app.MapControllers();
 
-            var context = new StorageContext(new DatabaseBuilder());
-            //await context.Database.MigrateAsync();
-            await context.Database.EnsureCreatedAsync();
-            await context.DisposeAsync();
 
             //CreateDatabase();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                using var context = scope.ServiceProvider.GetService<StorageContext>();
+                await context.Database.EnsureCreatedAsync();
+                //await context.Database.MigrateAsync();
+                await context.DisposeAsync();
+                var service = scope.ServiceProvider.GetService<WhiteLabelManager>();
+                await service.Initialize("Storage", "https://localhost:7184", typeof(StorageContext));
+            }
 
             StartUp startUp = new StartUp();
             await startUp.Run(new DependencyManager());

@@ -11,7 +11,7 @@ using WhiteLables.GeneratedServices;
 
 namespace EasyMicroservices.StorageMicroservice
 {
-    internal class WhiteLabelManager
+    public class WhiteLabelManager
     {
         public WhiteLabelManager(IServiceProvider serviceProvider, IDependencyManager dependencyManager)
         {
