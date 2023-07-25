@@ -18,8 +18,8 @@ namespace EasyMicroservices.StorageMicroservice
 
         public void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseInMemoryDatabase("Storage database");
-            optionsBuilder.UseSqlServer(config.GetConnectionString("local"));
+            optionsBuilder.UseInMemoryDatabase("Storage database");
+            //optionsBuilder.UseSqlServer(config.GetConnectionString("local"));
         }
     }
 }
