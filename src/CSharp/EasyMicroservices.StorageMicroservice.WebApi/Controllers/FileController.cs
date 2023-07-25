@@ -10,6 +10,8 @@ using System.Text.Json.Serialization;
 using System.IO;
 using EasyMicroservices.FileManager.Interfaces;
 using ServiceContracts;
+using System.Text;
+using System.Web;
 
 namespace EasyMicroservices.StorageMicroservice.Controllers
 {
@@ -249,61 +251,12 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             return await DownloadFile(file.Guid.ToString(), password);
         }
 
-
-        [HttpGet("{fileGuid}")]
-        public async Task<IActionResult> GetImage(string fileGuid, string password)
+        [HttpGet]
+        public string GenerateDownloadUrl(string fileGuid, string password = null)
         {
-            var file = _context.Files.Where(o => o.Guid.ToString() == fileGuid).FirstOrDefault();
-            if (file == null)
-            {
-                return NotFound();
-            }
-
-            var filePath = NameToFullPath(file.Path);
-
-            if (!await _fileManagerProvider.IsExistFileAsync(filePath))
-            {
-                return NotFound();
-            }
-
-            if (password != file.Password)
-            {
-                return Unauthorized();
-            }
-
-            if (Constants.AllowedFileExtensions.Contains(file.Extension.ToLower()) && Constants.ImageExtensions.Contains(file.Extension.ToLower()))
-            {
-                var fileBytes = await _fileManagerProvider.ReadAllBytesAsync(filePath);
-                var base64String = Convert.ToBase64String(fileBytes);
-
-                var URL = Url.Action("ImageBase64", "File", new { data = base64String, file.ContentType });
-                string DownloadLink = @$"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{URL}";
-                return Ok(DownloadLink);
-            }
-            else if (!Constants.ImageExtensions.Contains(file.Extension.ToLower()))
-            {
-                return BadRequest("The file is not an image.");
-            }
-            else
-            {
-                return BadRequest("The file extension is not allowed.");
-            }
+            return GenerateDownloadLink(HttpContext, fileGuid, password);
         }
 
-        [HttpGet("{fileId}")]
-        public async Task<IActionResult> GetImageById(long fileId, [FromQuery] string? password)
-        {
-            var file = _context.Files.Where(o => o.Id == fileId).FirstOrDefault();
-
-            return await GetImage(file.Guid.ToString(), password);
-        }
-
-        [HttpGet("ImageBase64")]
-        public IActionResult ImageBase64(string data, string contentType)
-        {
-            var bytes = Convert.FromBase64String(data);
-            return File(bytes, contentType);
-        }
         //[HttpGet]
         //public ResultContract GetFilesByFolderId(long FolderId)
         //{
