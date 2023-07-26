@@ -24,8 +24,8 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
 
         private string NameToFullPath(string fileName)
         {
-            string webRootPath = Directory.GetCurrentDirectory();
-            string directoryPath = _directoryManagerProvider.PathProvider.Combine(webRootPath, fileName);
+            string webRootPath = AppDomain.CurrentDomain.BaseDirectory;
+            string directoryPath = _directoryManagerProvider.PathProvider.Combine(webRootPath, "StorageFiles", fileName);
             return directoryPath;
         }
 
@@ -53,12 +53,12 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             using var stream = new FileStream(newFile.Path, FileMode.Create);
             await input.File.CopyToAsync(stream);
 
-            var result = await _contractLogic.Add(input);
-            if (result.TryGetResult(out long fileId, out MessageContract<FileContract> errorContract))
+            var result = await _contractLogic.AddEntity(newFile);
+            if (result.TryGetResult(out FileEntity file, out MessageContract<FileContract> errorContract))
             {
                 return new FileContract
                 {
-                    Id = result.Result,
+                    Id = file.Id,
                     CreationDateTime = newFile.CreationDateTime,
                     Name = newFile.Name,
                     ContentType = newFile.ContentType,
@@ -68,6 +68,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                     Password = newFile.Password,
                     Path = newFile.Path,
                     DownloadLink = GenerateDownloadLink(HttpContext, newFile.Id, newFile.Password),
+                    UniqueIdentity = file.UniqueIdentity
                 };
             }
             return errorContract;
