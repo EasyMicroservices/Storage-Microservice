@@ -22,11 +22,16 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             _contractLogic = contractLogic;
         }
 
-        private string NameToFullPath(string fileName)
+        private async Task<string> NameToFullPath(string fileName)
         {
             string webRootPath = AppDomain.CurrentDomain.BaseDirectory;
-            string directoryPath = _directoryManagerProvider.PathProvider.Combine(webRootPath, "StorageFiles", fileName);
-            return directoryPath;
+            string directoryPath = _directoryManagerProvider.PathProvider.Combine(webRootPath, "StorageFiles");
+            string filePath = _directoryManagerProvider.PathProvider.Combine(directoryPath, fileName);
+            if (!await _directoryManagerProvider.IsExistDirectoryAsync(directoryPath))
+            {
+                await _directoryManagerProvider.CreateDirectoryAsync(directoryPath);
+            }
+            return filePath;
         }
 
         [HttpPost]
@@ -46,14 +51,18 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                 Extension = fileExtension,
                 FolderId = input.FolderId ?? 1,
                 Password = filePassword,
-                Path = NameToFullPath(fileName),
                 UniqueIdentity = input.UniqueIdentity
             };
+
+            var result = await _contractLogic.AddEntity(newFile);
+
+            result.Result.Path = await NameToFullPath($"{result.Result.Id}_{fileName}");
+            await _contractLogic.SaveChangesAsync();
 
             using var stream = new FileStream(newFile.Path, FileMode.Create);
             await input.File.CopyToAsync(stream);
 
-            var result = await _contractLogic.AddEntity(newFile);
+
             if (result.TryGetResult(out FileEntity file, out MessageContract<FileContract> errorContract))
             {
                 return new FileContract
@@ -82,7 +91,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             {
                 if (find.Result.Password == password)
                 {
-                    var filePath = NameToFullPath(find.Result.Path);
+                    var filePath = await NameToFullPath(find.Result.Path);
                     if (await _fileManagerProvider.IsExistFileAsync(filePath))
                     {
                         await _fileManagerProvider.DeleteFileAsync(filePath);
@@ -112,7 +121,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             }
             else
             {
-                var filePath = NameToFullPath(file.Result.Path);
+                var filePath = await NameToFullPath(file.Result.Path);
 
                 if (!await _fileManagerProvider.IsExistFileAsync(filePath))
                     return NotFound();
