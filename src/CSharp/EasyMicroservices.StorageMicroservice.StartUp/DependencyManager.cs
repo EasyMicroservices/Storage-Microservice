@@ -46,7 +46,7 @@ namespace EasyMicroservices.StorageMicroservice
 
         public virtual IMapperProvider GetMapper()
         {
-            var mapper = new CompileTimeMapperProvider();
+            var mapper = new CompileTimeMapperProvider(new EasyMicroservices.Mapper.SerializerMapper.Providers.SerializerMapperProvider(new EasyMicroservices.Serialization.Newtonsoft.Json.Providers.NewtonsoftJsonProvider()));
             foreach (var type in typeof(IDependencyManager).Assembly.GetTypes())
             {
                 if (typeof(IMapper).IsAssignableFrom(type))

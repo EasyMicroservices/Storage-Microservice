@@ -34,14 +34,11 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         [HttpGet]
         public async Task<MessageContract<List<FolderContract>>> GetAll()
         {
-            var result = new MessageContract<List<FolderContract>>();
             var Folders = await _context.Folders.ToListAsync();
-
 
             if (Folders.Count > 0)
             {
-                result.IsSuccess = true;
-                result.Result = Folders.Select(f => new FolderContract
+                return Folders.Select(f => new FolderContract
                 {
                     Id = f.Id,
                     CreationDateTime = f.CreationDateTime,
@@ -50,12 +47,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                 }).ToList();
             }
             else
-            {
-                result.IsSuccess = false;
-                result.Error.Message = "No directory found";
-            }
-
-            return result;
+                return (FailedReasonType.NotFound, "No directory found");
         }
 
         [HttpPut]
