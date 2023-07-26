@@ -119,12 +119,12 @@
         }
       }
     },
-    "/api/File/DownloadFileWithId": {
+    "/api/File/DownloadFile": {
       "get": {
         "tags": [
           "File"
         ],
-        "operationId": "DownloadFileWithId",
+        "operationId": "DownloadFile",
         "parameters": [
           {
             "name": "id",
