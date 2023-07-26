@@ -112,7 +112,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DownloadFileWithIdAsync([FromQuery] long id, [FromQuery] string password)
+        public async Task<IActionResult> DownloadFileAsync([FromQuery] long id, [FromQuery] string password)
         {
             var file = await GetById(id);
             if (!file || file.Result.Password != password)
