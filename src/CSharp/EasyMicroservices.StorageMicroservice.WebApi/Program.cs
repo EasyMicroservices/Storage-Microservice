@@ -1,20 +1,19 @@
+using EasyMicroservices.FileManager.Interfaces;
+using EasyMicroservices.FileManager.Providers.DirectoryProviders;
+using EasyMicroservices.FileManager.Providers.FileProviders;
+using EasyMicroservices.StorageMicroservice.Contracts;
+using EasyMicroservices.StorageMicroservice.Controllers;
 using EasyMicroservices.StorageMicroservice.Database;
 using EasyMicroservices.StorageMicroservice.Database.Contexts;
+using EasyMicroservices.StorageMicroservice.Database.Entities;
+using EasyMicroservices.StorageMicroservice.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
-using EasyMicroservices.FileManager;
-using Microsoft.Extensions.DependencyInjection;
-using EasyMicroservices.FileManager.Interfaces;
-using EasyMicroservices.FileManager.Providers.PathProviders;
-using EasyMicroservices.FileManager.Providers.DirectoryProviders;
-using EasyMicroservices.FileManager.Providers.FileProviders;
-using EasyMicroservices.StorageMicroservice.Database.Entities;
-using EasyMicroservices.StorageMicroservice.Contracts;
-using EasyMicroservices.StorageMicroservice.Interfaces;
 
 namespace EasyMicroservices.StorageMicroservice.WebApi
 {
@@ -38,6 +37,14 @@ namespace EasyMicroservices.StorageMicroservice.WebApi
             {
                 options.SchemaFilter<GenericFilter>();
                 options.SchemaFilter<XEnumNamesSchemaFilter>();
+                options.MapType<FileContentResult>(() =>
+                {
+                    return new OpenApiSchema
+                    {
+                        Type = "string",
+                        Format = "binary",
+                    };
+                });
             });
 
             builder.Services.AddDbContext<StorageContext>(options =>

@@ -86,7 +86,10 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         [HttpDelete]
         public async Task<MessageContract> DeleteFileByPassword(long fileId, string password)
         {
-            var find = await GetById(fileId);
+            var find = await GetById(new Cores.Contracts.Requests.GetIdRequestContract<long>()
+            {
+                Id = fileId
+            });
             if (find)
             {
                 if (find.Result.Password == password)
@@ -96,7 +99,10 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                     {
                         await _fileManagerProvider.DeleteFileAsync(filePath);
                     }
-                    var deleteResult = await HardDeleteById(fileId);
+                    var deleteResult = await SoftDeleteById(new Cores.Contracts.Requests.SoftDeleteRequestContract<long>
+                    {
+                        Id = fileId
+                    });
                     return deleteResult;
                 }
                 else
@@ -112,23 +118,31 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<FileContentResult>> DownloadFileAsync([FromQuery] long id, [FromQuery] string password)
+        [ProducesResponseType(typeof(FileContentResult), 200)]
+        public async Task<FileContentResult> DownloadFileAsync([FromQuery] long id, [FromQuery] string password)
         {
-            var file = await GetById(id);
+            var file = await GetById(new Cores.Contracts.Requests.GetIdRequestContract<long>()
+            {
+                Id = id
+            });
             if (!file || file.Result.Password != password)
             {
-                return NotFound();
+                HttpContext.Response.StatusCode = 404;
+                return default;
             }
             else
             {
                 var filePath = await NameToFullPath(file.Result.Path);
 
                 if (!await _fileManagerProvider.IsExistFileAsync(filePath))
-                    return NotFound();
+                {
+                    HttpContext.Response.StatusCode = 404;
+                    return default;
+                }
 
                 var fileBytes = await _fileManagerProvider.ReadAllBytesAsync(filePath);
 
-                return File(fileBytes, "application/octet-stream", file.Result.Name);
+                return File(fileBytes, file.Result.ContentType, file.Result.Name);
             }
         }
     }

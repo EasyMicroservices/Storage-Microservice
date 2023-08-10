@@ -3,12 +3,14 @@ using System;
 
 namespace EasyMicroservices.StorageMicroservice.Database.Schemas
 {
-    public class FolderSchema : IUniqueIdentitySchema
+    public class FolderSchema : IUniqueIdentitySchema, IDateTimeSchema, ISoftDeleteSchema
     {
         public DateTime CreationDateTime { get; set; }
         public DateTime? ModificationDateTime { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
         public string UniqueIdentity { get; set; }
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedDateTime { get; set; }
     }
 }

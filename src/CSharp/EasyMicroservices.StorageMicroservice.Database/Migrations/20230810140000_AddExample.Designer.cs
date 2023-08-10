@@ -4,6 +4,7 @@ using EasyMicroservices.StorageMicroservice.Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyMicroservices.StorageMicroservice.Migrations
 {
     [DbContext(typeof(StorageContext))]
-    partial class StorageContextModelSnapshot : ModelSnapshot
+    [Migration("20230810140000_AddExample")]
+    partial class AddExample
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,17 +39,11 @@ namespace EasyMicroservices.StorageMicroservice.Migrations
                     b.Property<DateTime>("CreationDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DeletedDateTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Extension")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("FolderId")
                         .HasColumnType("bigint");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<long>("Length")
                         .HasColumnType("bigint");
@@ -64,22 +61,11 @@ namespace EasyMicroservices.StorageMicroservice.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UniqueIdentity")
-                        .HasColumnType("nvarchar(450)")
-                        .UseCollation("SQL_Latin1_General_CP1_CS_AS");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreationDateTime");
-
-                    b.HasIndex("DeletedDateTime");
-
                     b.HasIndex("FolderId");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.HasIndex("ModificationDateTime");
-
-                    b.HasIndex("UniqueIdentity");
 
                     b.ToTable("Files");
                 });
@@ -95,12 +81,6 @@ namespace EasyMicroservices.StorageMicroservice.Migrations
                     b.Property<DateTime>("CreationDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DeletedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime?>("ModificationDateTime")
                         .HasColumnType("datetime2");
 
@@ -111,20 +91,9 @@ namespace EasyMicroservices.StorageMicroservice.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UniqueIdentity")
-                        .HasColumnType("nvarchar(450)")
-                        .UseCollation("SQL_Latin1_General_CP1_CS_AS");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreationDateTime");
-
-                    b.HasIndex("DeletedDateTime");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.HasIndex("ModificationDateTime");
-
-                    b.HasIndex("UniqueIdentity");
 
                     b.ToTable("Folders");
 
@@ -132,8 +101,7 @@ namespace EasyMicroservices.StorageMicroservice.Migrations
                         new
                         {
                             Id = 1L,
-                            CreationDateTime = new DateTime(2023, 8, 10, 17, 50, 36, 738, DateTimeKind.Local).AddTicks(6739),
-                            IsDeleted = false,
+                            CreationDateTime = new DateTime(2023, 8, 10, 17, 30, 0, 427, DateTimeKind.Local).AddTicks(7466),
                             Name = "Root"
                         });
                 });
