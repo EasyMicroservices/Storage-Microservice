@@ -3,7 +3,7 @@ using System;
 
 namespace EasyMicroservices.StorageMicroservice.Database.Schemas
 {
-    public class FileSchema : IUniqueIdentitySchema
+    public class FileSchema : IUniqueIdentitySchema, IDateTimeSchema, ISoftDeleteSchema
     {
         public DateTime CreationDateTime { get; set; }
         public DateTime? ModificationDateTime { get; set; }
@@ -14,5 +14,7 @@ namespace EasyMicroservices.StorageMicroservice.Database.Schemas
         public string Path { get; set; }
         public string ContentType { get; set; }
         public string UniqueIdentity { get; set; }
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedDateTime { get; set; }
     }
 }

@@ -1,9 +1,10 @@
-﻿using EasyMicroservices.StorageMicroservice.Database.Entities;
+﻿using EasyMicroservices.Cores.Relational.EntityFrameworkCore;
+using EasyMicroservices.StorageMicroservice.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyMicroservices.StorageMicroservice.Database.Contexts
 {
-    public class StorageContext : DbContext
+    public class StorageContext : RelationalCoreContext
     {
         IDatabaseBuilder _builder;
         public StorageContext(IDatabaseBuilder builder)
