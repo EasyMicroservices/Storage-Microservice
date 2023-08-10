@@ -112,23 +112,28 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<FileContentResult>> DownloadFileAsync([FromQuery] long id, [FromQuery] string password)
+        [ProducesResponseType(typeof(FileContentResult), 200)]
+        public async Task<FileContentResult> DownloadFileAsync([FromQuery] long id, [FromQuery] string password)
         {
             var file = await GetById(id);
             if (!file || file.Result.Password != password)
             {
-                return NotFound();
+                HttpContext.Response.StatusCode = 404;
+                return default;
             }
             else
             {
                 var filePath = await NameToFullPath(file.Result.Path);
 
                 if (!await _fileManagerProvider.IsExistFileAsync(filePath))
-                    return NotFound();
+                {
+                    HttpContext.Response.StatusCode = 404;
+                    return default;
+                }
 
                 var fileBytes = await _fileManagerProvider.ReadAllBytesAsync(filePath);
 
-                return File(fileBytes, "application/octet-stream", file.Result.Name);
+                return File(fileBytes, file.Result.ContentType, file.Result.Name);
             }
         }
     }
