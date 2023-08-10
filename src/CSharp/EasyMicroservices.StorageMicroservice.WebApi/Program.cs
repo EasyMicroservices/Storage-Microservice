@@ -72,16 +72,16 @@ namespace EasyMicroservices.StorageMicroservice.WebApi
             app.MapControllers();
 
 
-            CreateDatabase();
+            //CreateDatabase();
 
             using (var scope = app.Services.CreateScope())
             {
                 using var context = scope.ServiceProvider.GetService<StorageContext>();
-                await context.Database.EnsureCreatedAsync();
+                //await context.Database.EnsureCreatedAsync();
                 await context.Database.MigrateAsync();
                 await context.DisposeAsync();
                 var service = scope.ServiceProvider.GetService<WhiteLabelManager>();
-                await service.Initialize("Storage", "https://localhost:7184", typeof(StorageContext));
+                await service.Initialize("Storage", config.GetValue<string>("RootAddresses:WhiteLabel"), typeof(StorageContext));
             }
 
             StartUp startUp = new StartUp();
