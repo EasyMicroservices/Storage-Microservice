@@ -170,21 +170,30 @@
       }
     },
     "/api/File/GetById": {
-      "get": {
+      "post": {
         "tags": [
           "File"
         ],
         "operationId": "GetById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int64"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Int64GetIdRequestContract"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Int64GetIdRequestContract"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Int64GetIdRequestContract"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
@@ -210,7 +219,7 @@
       }
     },
     "/api/File/GetByUniqueIdentity": {
-      "get": {
+      "post": {
         "tags": [
           "File"
         ],
@@ -219,17 +228,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GetUniqueIdentityRequest"
+                "$ref": "#/components/schemas/GetUniqueIdentityRequestContract"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/GetUniqueIdentityRequest"
+                "$ref": "#/components/schemas/GetUniqueIdentityRequestContract"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/GetUniqueIdentityRequest"
+                "$ref": "#/components/schemas/GetUniqueIdentityRequestContract"
               }
             }
           }
@@ -308,11 +317,11 @@
       }
     },
     "/api/File/Update": {
-      "post": {
+      "put": {
         "tags": [
           "File"
         ],
-        "operationId": "UpdatePOST",
+        "operationId": "Update",
         "requestBody": {
           "content": {
             "application/json": {
@@ -362,16 +371,74 @@
           "File"
         ],
         "operationId": "HardDeleteById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int64"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Int64DeleteRequestContract"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Int64DeleteRequestContract"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Int64DeleteRequestContract"
+              }
             }
           }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageContract"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageContract"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageContract"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/File/SoftDeleteById": {
+      "delete": {
+        "tags": [
+          "File"
         ],
+        "operationId": "SoftDeleteById",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Int64SoftDeleteRequestContract"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Int64SoftDeleteRequestContract"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Int64SoftDeleteRequestContract"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success",
@@ -427,7 +494,7 @@
       }
     },
     "/api/File/GetAllByUniqueIdentity": {
-      "get": {
+      "post": {
         "tags": [
           "File"
         ],
@@ -436,17 +503,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GetUniqueIdentityRequest"
+                "$ref": "#/components/schemas/GetUniqueIdentityRequestContract"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/GetUniqueIdentityRequest"
+                "$ref": "#/components/schemas/GetUniqueIdentityRequestContract"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/GetUniqueIdentityRequest"
+                "$ref": "#/components/schemas/GetUniqueIdentityRequestContract"
               }
             }
           }
@@ -510,7 +577,7 @@
         "tags": [
           "Folder"
         ],
-        "operationId": "UpdatePUT",
+        "operationId": "Update2",
         "requestBody": {
           "content": {
             "application/json": {
@@ -706,6 +773,10 @@
             "type": "string",
             "nullable": true
           },
+          "endUserMessage": {
+            "type": "string",
+            "nullable": true
+          },
           "details": {
             "type": "string",
             "nullable": true
@@ -734,7 +805,9 @@
           "NotFound",
           "ValidationsError",
           "StreamError",
-          "WebServiceNotWorking"
+          "WebServiceNotWorking",
+          "Incorrect",
+          "OperationFailed"
         ],
         "enum": [
           0,
@@ -751,7 +824,9 @@
           11,
           12,
           13,
-          14
+          14,
+          15,
+          16
         ]
       },
       "FileContract": {
@@ -900,13 +975,35 @@
           }
         }
       },
-      "GetUniqueIdentityRequest": {
+      "GetUniqueIdentityRequestContract": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "uniqueIdentity": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "Int64DeleteRequestContract": {
+        "title": "DeleteRequestContract<Int64>",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "Int64GetIdRequestContract": {
+        "title": "GetIdRequestContract<Int64>",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       },
@@ -924,6 +1021,20 @@
           "result": {
             "type": "integer",
             "format": "int64"
+          }
+        }
+      },
+      "Int64SoftDeleteRequestContract": {
+        "title": "SoftDeleteRequestContract<Int64>",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isDelete": {
+            "type": "boolean"
           }
         }
       },
