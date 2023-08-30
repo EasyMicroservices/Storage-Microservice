@@ -13,6 +13,8 @@ namespace EasyMicroservices.StorageMicroservice.Contracts
         public string ContentType { get; set; }
         public string Password { get; set; }
         public long FolderId { get; set; }
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedDateTime { get; set; }
         public string DownloadLink { get; set; }
         public string UniqueIdentity { get; set; }
     }

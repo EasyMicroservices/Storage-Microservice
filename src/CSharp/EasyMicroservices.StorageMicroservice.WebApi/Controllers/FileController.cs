@@ -4,6 +4,7 @@ using EasyMicroservices.FileManager.Interfaces;
 using EasyMicroservices.ServiceContracts;
 using EasyMicroservices.StorageMicroservice.Contracts;
 using EasyMicroservices.StorageMicroservice.Database.Entities;
+using EasyMicroservices.StorageMicroservice.Logics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyMicroservices.StorageMicroservice.Controllers
@@ -20,18 +21,6 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             _directoryManagerProvider = directoryManagerProvider;
             _fileManagerProvider = fileManagerProvider;
             _contractLogic = contractLogic;
-        }
-
-        private async Task<string> NameToFullPath(string fileName)
-        {
-            string webRootPath = AppDomain.CurrentDomain.BaseDirectory;
-            string directoryPath = _directoryManagerProvider.PathProvider.Combine(webRootPath, "StorageFiles");
-            string filePath = _directoryManagerProvider.PathProvider.Combine(directoryPath, fileName);
-            if (!await _directoryManagerProvider.IsExistDirectoryAsync(directoryPath))
-            {
-                await _directoryManagerProvider.CreateDirectoryAsync(directoryPath);
-            }
-            return filePath;
         }
 
         [HttpPost]
@@ -56,7 +45,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
 
             var result = await _contractLogic.AddEntity(newFile);
 
-            result.Result.Path = await NameToFullPath($"{result.Result.Id}_{fileName}");
+            result.Result.Path = await FileLogic.NameToFullPath($"{result.Result.Id}_{fileName}", _directoryManagerProvider);
             await _contractLogic.SaveChangesAsync();
 
             using var stream = new FileStream(newFile.Path, FileMode.Create);
@@ -83,6 +72,19 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             return errorContract;
         }
 
+        [HttpPost]
+        public async Task<MessageContract<FileContract>> UploadOrReplaceFile([FromForm] AddFileRequestContract input)
+        {
+            var currentFile = await base.GetByUniqueIdentity(input.UniqueIdentity);
+            if (currentFile)
+            {
+                var deleteResult = await DeleteFileByPassword(currentFile.Result.Id, currentFile.Result.Password);
+                if (!deleteResult)
+                    return deleteResult.ToContract<FileContract>();
+            }
+            return await UploadFile(input);
+        }
+
         [HttpDelete]
         public async Task<MessageContract> DeleteFileByPassword(long fileId, string password)
         {
@@ -94,14 +96,15 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             {
                 if (find.Result.Password == password)
                 {
-                    var filePath = await NameToFullPath(find.Result.Path);
+                    var filePath = await FileLogic.NameToFullPath(find.Result.Path, _directoryManagerProvider);
                     if (await _fileManagerProvider.IsExistFileAsync(filePath))
                     {
                         await _fileManagerProvider.DeleteFileAsync(filePath);
                     }
                     var deleteResult = await SoftDeleteById(new Cores.Contracts.Requests.SoftDeleteRequestContract<long>
                     {
-                        Id = fileId
+                        Id = fileId,
+                        IsDelete = true
                     });
                     return deleteResult;
                 }
@@ -132,7 +135,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             }
             else
             {
-                var filePath = await NameToFullPath(file.Result.Path);
+                var filePath = await FileLogic.NameToFullPath(file.Result.Path, _directoryManagerProvider);
 
                 if (!await _fileManagerProvider.IsExistFileAsync(filePath))
                 {
