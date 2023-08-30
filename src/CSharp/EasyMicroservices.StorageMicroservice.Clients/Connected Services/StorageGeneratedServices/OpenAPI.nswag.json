@@ -72,6 +72,73 @@
         }
       }
     },
+    "/api/File/UploadOrReplaceFile": {
+      "post": {
+        "tags": [
+          "File"
+        ],
+        "operationId": "UploadOrReplaceFile",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "File"
+                ],
+                "properties": {
+                  "File": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "FolderId": {
+                    "title": "Nullable<Int64>",
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "UniqueIdentity": {
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "File": {
+                  "style": "form"
+                },
+                "FolderId": {
+                  "style": "form"
+                },
+                "UniqueIdentity": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/File/DeleteFileByPassword": {
       "delete": {
         "tags": [
@@ -162,104 +229,6 @@
                 "schema": {
                   "type": "string",
                   "format": "binary"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/File/GetById": {
-      "post": {
-        "tags": [
-          "File"
-        ],
-        "operationId": "GetById",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Int64GetIdRequestContract"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Int64GetIdRequestContract"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Int64GetIdRequestContract"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/FileContractMessageContract"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FileContractMessageContract"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FileContractMessageContract"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/File/GetByUniqueIdentity": {
-      "post": {
-        "tags": [
-          "File"
-        ],
-        "operationId": "GetByUniqueIdentity",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUniqueIdentityRequestContract"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUniqueIdentityRequestContract"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUniqueIdentityRequestContract"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/FileContractMessageContract"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FileContractMessageContract"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FileContractMessageContract"
                 }
               }
             }
@@ -456,6 +425,153 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MessageContract"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/File/GetById": {
+      "post": {
+        "tags": [
+          "File"
+        ],
+        "operationId": "GetById",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Int64GetIdRequestContract"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Int64GetIdRequestContract"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Int64GetIdRequestContract"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/File/GetByUniqueIdentity": {
+      "post": {
+        "tags": [
+          "File"
+        ],
+        "operationId": "GetByUniqueIdentity",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUniqueIdentityRequestContract"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUniqueIdentityRequestContract"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUniqueIdentityRequestContract"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/File/Filter": {
+      "post": {
+        "tags": [
+          "File"
+        ],
+        "operationId": "Filter",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterRequestContract"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterRequestContract"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterRequestContract"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractListMessageContract"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractListMessageContract"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractListMessageContract"
                 }
               }
             }
@@ -782,8 +898,23 @@
             "nullable": true
           },
           "stackTrace": {
-            "type": "string",
-            "nullable": true
+            "title": "List<String>",
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "children": {
+            "title": "List<ErrorContract>",
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/ErrorContract"
+            }
+          },
+          "serviceDetails": {
+            "$ref": "#/components/schemas/ServiceDetailsContract"
           }
         }
       },
@@ -800,7 +931,7 @@
           "SessionAccessDenied",
           "AccessDenied",
           "InternalError",
-          "Dupplicate",
+          "Duplicate",
           "Empty",
           "NotFound",
           "ValidationsError",
@@ -869,6 +1000,15 @@
             "type": "integer",
             "format": "int64"
           },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "deletedDateTime": {
+            "title": "Nullable<DateTime>",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
           "downloadLink": {
             "type": "string",
             "nullable": true
@@ -880,7 +1020,7 @@
         }
       },
       "FileContractListMessageContract": {
-        "title": "MessageContract<List`1>",
+        "title": "ListMessageContract<FileContract>",
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -890,6 +1030,9 @@
           "error": {
             "$ref": "#/components/schemas/ErrorContract"
           },
+          "success": {
+            "$ref": "#/components/schemas/SuccessContract"
+          },
           "result": {
             "title": "List<FileContract>",
             "type": "array",
@@ -897,6 +1040,10 @@
             "items": {
               "$ref": "#/components/schemas/FileContract"
             }
+          },
+          "hasItems": {
+            "type": "boolean",
+            "readOnly": true
           }
         }
       },
@@ -911,8 +1058,81 @@
           "error": {
             "$ref": "#/components/schemas/ErrorContract"
           },
+          "success": {
+            "$ref": "#/components/schemas/SuccessContract"
+          },
           "result": {
             "$ref": "#/components/schemas/FileContract"
+          }
+        }
+      },
+      "FilterRequestContract": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "isDeleted": {
+            "title": "Nullable<Boolean>",
+            "type": "boolean",
+            "nullable": true
+          },
+          "fromDeletedDateTime": {
+            "title": "Nullable<DateTime>",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "toDeletedDateTime": {
+            "title": "Nullable<DateTime>",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "fromCreationDateTime": {
+            "title": "Nullable<DateTime>",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "toCreationDateTime": {
+            "title": "Nullable<DateTime>",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "fromModificationDateTime": {
+            "title": "Nullable<DateTime>",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "toModificationDateTime": {
+            "title": "Nullable<DateTime>",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "uniqueIdentity": {
+            "type": "string",
+            "nullable": true
+          },
+          "index": {
+            "title": "Nullable<Int64>",
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "length": {
+            "title": "Nullable<Int64>",
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "sortColumnName": {
+            "type": "string",
+            "nullable": true
+          },
+          "isDescending": {
+            "type": "boolean"
           }
         }
       },
@@ -949,6 +1169,9 @@
           "error": {
             "$ref": "#/components/schemas/ErrorContract"
           },
+          "success": {
+            "$ref": "#/components/schemas/SuccessContract"
+          },
           "result": {
             "title": "List<FolderContract>",
             "type": "array",
@@ -969,6 +1192,9 @@
           },
           "error": {
             "$ref": "#/components/schemas/ErrorContract"
+          },
+          "success": {
+            "$ref": "#/components/schemas/SuccessContract"
           },
           "result": {
             "$ref": "#/components/schemas/FolderContract"
@@ -1018,6 +1244,9 @@
           "error": {
             "$ref": "#/components/schemas/ErrorContract"
           },
+          "success": {
+            "$ref": "#/components/schemas/SuccessContract"
+          },
           "result": {
             "type": "integer",
             "format": "int64"
@@ -1047,6 +1276,37 @@
           },
           "error": {
             "$ref": "#/components/schemas/ErrorContract"
+          },
+          "success": {
+            "$ref": "#/components/schemas/SuccessContract"
+          }
+        }
+      },
+      "ServiceDetailsContract": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "servieRouteAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "methodName": {
+            "type": "string",
+            "nullable": true
+          },
+          "porjectName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "SuccessContract": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "endUserMessage": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
