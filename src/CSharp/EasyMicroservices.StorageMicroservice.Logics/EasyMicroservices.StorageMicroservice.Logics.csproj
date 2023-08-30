@@ -1,23 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <RootNamespace>EasyMicroservices.StorageMicroservice</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<RootNamespace>EasyMicroservices.StorageMicroservice</RootNamespace>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\EasyMicroservices.StorageMicroservice.Database\EasyMicroservices.StorageMicroservice.Database.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="EasyMicroservices.Mapper.CompileTimeMapper" Version="0.0.0.5" />
-    <PackageReference Include="EasyMicroservices.Mapper.SerializerMapper" Version="0.0.0.2" />
-    <PackageReference Include="EasyMicroservices.Serialization.Newtonsoft.Json" Version="0.0.0.3" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="DatabaseLogics\" />
-    <Folder Include="Mappers\" />
-  </ItemGroup>
-  
+	<ItemGroup>
+		<ProjectReference Include="..\EasyMicroservices.StorageMicroservice.Database\EasyMicroservices.StorageMicroservice.Database.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="EasyMicroservices.FileManager" Version="0.0.0.3" />
+		<PackageReference Include="EasyMicroservices.Mapper.CompileTimeMapper" Version="0.0.0.5" />
+		<PackageReference Include="EasyMicroservices.Mapper.SerializerMapper" Version="0.0.0.2" />
+		<PackageReference Include="EasyMicroservices.Serialization.Newtonsoft.Json" Version="0.0.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="DatabaseLogics\" />
+		<Folder Include="Mappers\" />
+	</ItemGroup>
+
 </Project>

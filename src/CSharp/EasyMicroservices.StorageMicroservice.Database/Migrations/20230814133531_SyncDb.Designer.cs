@@ -4,6 +4,7 @@ using EasyMicroservices.StorageMicroservice.Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyMicroservices.StorageMicroservice.Migrations
 {
     [DbContext(typeof(StorageContext))]
-    partial class StorageContextModelSnapshot : ModelSnapshot
+    [Migration("20230814133531_SyncDb")]
+    partial class SyncDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -132,7 +135,7 @@ namespace EasyMicroservices.StorageMicroservice.Migrations
                         new
                         {
                             Id = 1L,
-                            CreationDateTime = new DateTime(2023, 8, 14, 17, 20, 47, 85, DateTimeKind.Local).AddTicks(420),
+                            CreationDateTime = new DateTime(2023, 8, 14, 17, 5, 31, 597, DateTimeKind.Local).AddTicks(9609),
                             IsDeleted = false,
                             Name = "Root"
                         });
