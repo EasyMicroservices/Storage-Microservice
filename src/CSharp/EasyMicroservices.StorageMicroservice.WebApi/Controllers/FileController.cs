@@ -40,7 +40,8 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                 Extension = fileExtension,
                 FolderId = input.FolderId ?? 1,
                 Password = filePassword,
-                UniqueIdentity = input.UniqueIdentity
+                UniqueIdentity = input.UniqueIdentity,
+                Key = input.Key
             };
 
             var result = await _contractLogic.AddEntity(newFile);
@@ -66,7 +67,8 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                     Password = newFile.Password,
                     Path = newFile.Path,
                     DownloadLink = GenerateDownloadLink(HttpContext, newFile.Id, newFile.Password),
-                    UniqueIdentity = file.UniqueIdentity
+                    UniqueIdentity = file.UniqueIdentity,
+                    Key = file.Key
                 };
             }
             return errorContract;

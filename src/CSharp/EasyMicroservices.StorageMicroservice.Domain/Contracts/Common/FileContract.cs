@@ -7,6 +7,7 @@ namespace EasyMicroservices.StorageMicroservice.Contracts
         public long Id { get; set; }
         public DateTime CreationDateTime { get; set; }
         public string Name { get; set; }
+        public string Key { get; set; }
         public string Extension { get; set; }
         public long Length { get; set; }
         public string Path { get; set; }

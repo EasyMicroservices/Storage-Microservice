@@ -30,6 +30,8 @@ namespace EasyMicroservices.StorageMicroservice.Database.Contexts
             {
                 model.HasKey(r => r.Id);
 
+                model.HasIndex(r => r.Key);
+
                 model.HasOne(x => x.Folder)
                    .WithMany(x => x.Files)
                    .HasForeignKey(x => x.FolderId).OnDelete(DeleteBehavior.Restrict);
