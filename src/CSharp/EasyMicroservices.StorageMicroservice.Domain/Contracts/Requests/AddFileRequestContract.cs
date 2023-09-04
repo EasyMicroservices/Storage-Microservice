@@ -7,6 +7,7 @@ namespace EasyMicroservices.StorageMicroservice.Contracts
     {
         [Required]
         public IFormFile File { get; set; }
+        public string Key { get; set; }
         public long? FolderId { get; set; }
         public string UniqueIdentity { get; set; }
     }

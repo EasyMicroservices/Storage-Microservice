@@ -1,20 +1,19 @@
-﻿using EasyMicroservices.Cores.Interfaces;
-using System;
+﻿using EasyMicroservices.Cores.Database.Schemas;
 
 namespace EasyMicroservices.StorageMicroservice.Database.Schemas
 {
-    public class FileSchema : IUniqueIdentitySchema, IDateTimeSchema, ISoftDeleteSchema
+    public class FileSchema : FullAbilitySchema
     {
-        public DateTime CreationDateTime { get; set; }
-        public DateTime? ModificationDateTime { get; set; }
         public string Name { get; set; }
+        /// <summary>
+        /// every files can have key to separate them in groups
+        /// because of unique identity cannot separate them
+        /// </summary>
+        public string Key { get; set; }
         public string Extension { get; set; }
         public string Password { get; set; }
         public long Length { get; set; }
         public string Path { get; set; }
         public string ContentType { get; set; }
-        public string UniqueIdentity { get; set; }
-        public bool IsDeleted { get; set; }
-        public DateTime? DeletedDateTime { get; set; }
     }
 }

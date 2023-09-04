@@ -24,6 +24,9 @@
                     "type": "string",
                     "format": "binary"
                   },
+                  "Key": {
+                    "type": "string"
+                  },
                   "FolderId": {
                     "title": "Nullable<Int64>",
                     "type": "integer",
@@ -36,6 +39,9 @@
               },
               "encoding": {
                 "File": {
+                  "style": "form"
+                },
+                "Key": {
                   "style": "form"
                 },
                 "FolderId": {
@@ -91,6 +97,9 @@
                     "type": "string",
                     "format": "binary"
                   },
+                  "Key": {
+                    "type": "string"
+                  },
                   "FolderId": {
                     "title": "Nullable<Int64>",
                     "type": "integer",
@@ -103,6 +112,9 @@
               },
               "encoding": {
                 "File": {
+                  "style": "form"
+                },
+                "Key": {
                   "style": "form"
                 },
                 "FolderId": {
@@ -840,6 +852,10 @@
             "type": "string",
             "format": "binary"
           },
+          "key": {
+            "type": "string",
+            "nullable": true
+          },
           "folderId": {
             "title": "Nullable<Int64>",
             "type": "integer",
@@ -973,6 +989,10 @@
             "format": "date-time"
           },
           "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "key": {
             "type": "string",
             "nullable": true
           },
