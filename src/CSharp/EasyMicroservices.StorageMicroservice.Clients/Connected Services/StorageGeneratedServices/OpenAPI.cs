@@ -57,15 +57,15 @@ namespace Storage.GeneratedServices
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<FileContractMessageContract> UploadFileAsync(FileParameter file, long? folderId, string uniqueIdentity)
+        public virtual System.Threading.Tasks.Task<FileContractMessageContract> UploadFileAsync(FileParameter file, string key, long? folderId, string uniqueIdentity)
         {
-            return UploadFileAsync(file, folderId, uniqueIdentity, System.Threading.CancellationToken.None);
+            return UploadFileAsync(file, key, folderId, uniqueIdentity, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<FileContractMessageContract> UploadFileAsync(FileParameter file, long? folderId, string uniqueIdentity, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<FileContractMessageContract> UploadFileAsync(FileParameter file, string key, long? folderId, string uniqueIdentity, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/UploadFile");
@@ -89,6 +89,13 @@ namespace Storage.GeneratedServices
                         if (!string.IsNullOrEmpty(file.ContentType))
                             content_file_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(file.ContentType);
                         content_.Add(content_file_, "File", file.FileName ?? "File");
+                    }
+
+                    if (key == null)
+                        throw new System.ArgumentNullException("key");
+                    else
+                    {
+                        content_.Add(new System.Net.Http.StringContent(ConvertToString(key, System.Globalization.CultureInfo.InvariantCulture)), "Key");
                     }
 
                     if (folderId == null)
@@ -160,15 +167,15 @@ namespace Storage.GeneratedServices
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<FileContractMessageContract> UploadOrReplaceFileAsync(FileParameter file, long? folderId, string uniqueIdentity)
+        public virtual System.Threading.Tasks.Task<FileContractMessageContract> UploadOrReplaceFileAsync(FileParameter file, string key, long? folderId, string uniqueIdentity)
         {
-            return UploadOrReplaceFileAsync(file, folderId, uniqueIdentity, System.Threading.CancellationToken.None);
+            return UploadOrReplaceFileAsync(file, key, folderId, uniqueIdentity, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<FileContractMessageContract> UploadOrReplaceFileAsync(FileParameter file, long? folderId, string uniqueIdentity, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<FileContractMessageContract> UploadOrReplaceFileAsync(FileParameter file, string key, long? folderId, string uniqueIdentity, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/File/UploadOrReplaceFile");
@@ -192,6 +199,13 @@ namespace Storage.GeneratedServices
                         if (!string.IsNullOrEmpty(file.ContentType))
                             content_file_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(file.ContentType);
                         content_.Add(content_file_, "File", file.FileName ?? "File");
+                    }
+
+                    if (key == null)
+                        throw new System.ArgumentNullException("key");
+                    else
+                    {
+                        content_.Add(new System.Net.Http.StringContent(ConvertToString(key, System.Globalization.CultureInfo.InvariantCulture)), "Key");
                     }
 
                     if (folderId == null)
@@ -1677,6 +1691,7 @@ namespace Storage.GeneratedServices
     public partial class AddFileRequestContract : System.ComponentModel.INotifyPropertyChanged
     {
         private byte[] _file;
+        private string _key;
         private long? _folderId;
         private string _uniqueIdentity;
 
@@ -1691,6 +1706,21 @@ namespace Storage.GeneratedServices
                 if (_file != value)
                 {
                     _file = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("key", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Key
+        {
+            get { return _key; }
+
+            set
+            {
+                if (_key != value)
+                {
+                    _key = value;
                     RaisePropertyChanged();
                 }
             }
@@ -1972,6 +2002,7 @@ namespace Storage.GeneratedServices
         private long _id;
         private System.DateTimeOffset _creationDateTime;
         private string _name;
+        private string _key;
         private string _extension;
         private long _length;
         private string _path;
@@ -2023,6 +2054,21 @@ namespace Storage.GeneratedServices
                 if (_name != value)
                 {
                     _name = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("key", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Key
+        {
+            get { return _key; }
+
+            set
+            {
+                if (_key != value)
+                {
+                    _key = value;
                     RaisePropertyChanged();
                 }
             }
