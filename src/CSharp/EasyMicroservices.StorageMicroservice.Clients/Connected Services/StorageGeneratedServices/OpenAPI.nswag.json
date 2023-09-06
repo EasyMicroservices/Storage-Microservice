@@ -78,6 +78,104 @@
         }
       }
     },
+    "/api/File/GetByKeyAndUniqueIdentity": {
+      "post": {
+        "tags": [
+          "File"
+        ],
+        "operationId": "GetByKeyAndUniqueIdentity",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetByKeyRequestContract"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetByKeyRequestContract"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetByKeyRequestContract"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/File/GetAllByKeyAndUniqueIdentity": {
+      "post": {
+        "tags": [
+          "File"
+        ],
+        "operationId": "GetAllByKeyAndUniqueIdentity",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetByKeyRequestContract"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetByKeyRequestContract"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetByKeyRequestContract"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractListMessageContract"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractListMessageContract"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractListMessageContract"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/File/UploadOrReplaceFile": {
       "post": {
         "tags": [
@@ -1218,6 +1316,20 @@
           },
           "result": {
             "$ref": "#/components/schemas/FolderContract"
+          }
+        }
+      },
+      "GetByKeyRequestContract": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "uniqueIdentity": {
+            "type": "string",
+            "nullable": true
+          },
+          "key": {
+            "type": "string",
+            "nullable": true
           }
         }
       },

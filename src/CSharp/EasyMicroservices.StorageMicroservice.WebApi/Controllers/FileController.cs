@@ -3,6 +3,7 @@ using EasyMicroservices.Cores.Database.Interfaces;
 using EasyMicroservices.FileManager.Interfaces;
 using EasyMicroservices.ServiceContracts;
 using EasyMicroservices.StorageMicroservice.Contracts;
+using EasyMicroservices.StorageMicroservice.Contracts.Requests;
 using EasyMicroservices.StorageMicroservice.Database.Entities;
 using EasyMicroservices.StorageMicroservice.Logics;
 using Microsoft.AspNetCore.Mvc;
@@ -72,6 +73,18 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                 };
             }
             return errorContract;
+        }
+
+        [HttpPost]
+        public async Task<MessageContract<FileContract>> GetByKeyAndUniqueIdentity(GetByKeyRequestContract request, CancellationToken cancellationToken = default)
+        {
+            return await ContractLogic.GetByUniqueIdentity(request, q => q.Where(x => x.Key == request.Key), cancellationToken);
+        }
+
+        [HttpPost]
+        public async Task<ListMessageContract<FileContract>> GetAllByKeyAndUniqueIdentity(GetByKeyRequestContract request, CancellationToken cancellationToken = default)
+        {
+            return await ContractLogic.GetAllByUniqueIdentity(request, q => q.Where(x => x.Key == request.Key), cancellationToken);
         }
 
         [HttpPost]
