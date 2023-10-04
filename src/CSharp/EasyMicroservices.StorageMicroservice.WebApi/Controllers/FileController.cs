@@ -147,6 +147,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             if (!file || file.Result.Password != password)
             {
                 HttpContext.Response.StatusCode = 404;
+                Console.WriteLine($"File not found: {file.Result?.Id} {file.Result?.Password}");
                 return default;
             }
             else
@@ -156,6 +157,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                 if (!await _fileManagerProvider.IsExistFileAsync(filePath))
                 {
                     HttpContext.Response.StatusCode = 404;
+                    Console.WriteLine($"File not found: {filePath}");
                     return default;
                 }
 
