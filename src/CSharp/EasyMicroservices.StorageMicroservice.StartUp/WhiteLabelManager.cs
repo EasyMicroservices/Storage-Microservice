@@ -35,7 +35,7 @@ namespace EasyMicroservices.StorageMicroservice
 
         public async Task Initialize(string microserviceName, string whiteLableRoute, params Type[] dbContextTypes)
         {
-            if (dbContextTypes.IsNullOrEmpty())
+            if (dbContextTypes.IsEmpty())
                 return;
             var whiteLabelClient = new WhiteLables.GeneratedServices.WhiteLabelClient(whiteLableRoute, HttpClient);
             var whiteLabels = await whiteLabelClient.GetAllAsync();
