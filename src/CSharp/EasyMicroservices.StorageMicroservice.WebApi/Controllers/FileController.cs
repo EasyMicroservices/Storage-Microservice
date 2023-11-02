@@ -29,13 +29,6 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             _contractLogic = _unitOfWork.GetContractLogic<FileEntity, AddFileRequestContract, FileContract, FileContract, long>();
         }
 
-        public FileController(IDirectoryManagerProvider directoryManagerProvider, IFileManagerProvider fileManagerProvider, IContractLogic<FileEntity, AddFileRequestContract, FileContract, FileContract, long> contractLogic) : base(contractLogic)
-        {
-            _directoryManagerProvider = directoryManagerProvider;
-            _fileManagerProvider = fileManagerProvider;
-            _contractLogic = contractLogic;
-        }
-
         [HttpPost]
         public async Task<MessageContract<FileContract>> UploadFile([FromForm] AddFileRequestContract input)
         {
