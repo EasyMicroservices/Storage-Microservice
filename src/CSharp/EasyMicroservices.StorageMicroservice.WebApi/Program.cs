@@ -3,6 +3,9 @@ using EasyMicroservices.Cores.AspEntityFrameworkCoreApi;
 using EasyMicroservices.Cores.Relational.EntityFrameworkCore.Intrerfaces;
 using EasyMicroservices.ContentsMicroservice.Helpers;
 using EasyMicroservices.Cores.AspEntityFrameworkCoreApi.Interfaces;
+using EasyMicroservices.FileManager.Interfaces;
+using EasyMicroservices.FileManager.Providers.DirectoryProviders;
+using EasyMicroservices.FileManager.Providers.FileProviders;
 
 namespace EasyMicroservices.StorageMicroservice.WebApi
 {
@@ -18,11 +21,15 @@ namespace EasyMicroservices.StorageMicroservice.WebApi
 
         static WebApplicationBuilder CreateBuilder(string[] args)
         {
+            string webRootPath = @Directory.GetCurrentDirectory();
+
             var app = StartUpExtensions.Create<StorageContext>(args);
             app.Services.Builder<StorageContext>();
             app.Services.AddTransient((serviceProvider) => new UnitOfWork(serviceProvider));
             app.Services.AddTransient(serviceProvider => new StorageContext(serviceProvider.GetService<IEntityFrameworkCoreDatabaseBuilder>()));
             app.Services.AddTransient<IEntityFrameworkCoreDatabaseBuilder, DatabaseBuilder>();
+            app.Services.AddScoped<IDirectoryManagerProvider>(serviceProvider => new DiskDirectoryProvider(webRootPath));
+            app.Services.AddScoped<IFileManagerProvider>(serviceProvider => new DiskFileProvider(new DiskDirectoryProvider(webRootPath)));
             app.Services.AddScoped<IAppUnitOfWork>((serviceProvider) => new AppUnitOfWork(serviceProvider));
 
             StartUpExtensions.AddWhiteLabel("Content", "RootAddresses:WhiteLabel");
