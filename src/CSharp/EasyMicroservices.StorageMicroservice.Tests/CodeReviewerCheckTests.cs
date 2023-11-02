@@ -14,7 +14,6 @@ namespace EasyMicroservices.StorageMicroservice.Tests
             //types to check (this will check all of types in assembly so no need to add all of types of assembly)
             AssemblyManager.AddAssemblyToReview(
                 typeof(ApplicationManager),
-                typeof(StartUp),
                 typeof(FileEntity),
                 typeof(FileContract),
                 typeof(FileController));
