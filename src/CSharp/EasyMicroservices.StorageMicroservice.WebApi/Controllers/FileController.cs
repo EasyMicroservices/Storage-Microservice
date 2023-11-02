@@ -1,4 +1,6 @@
-﻿using EasyMicroservices.Cores.AspCoreApi;
+﻿using EasyMicroservices.ContentsMicroservice.Helpers;
+using EasyMicroservices.Cores.AspCoreApi;
+using EasyMicroservices.Cores.AspEntityFrameworkCoreApi.Interfaces;
 using EasyMicroservices.Cores.Database.Interfaces;
 using EasyMicroservices.FileManager.Interfaces;
 using EasyMicroservices.ServiceContracts;
@@ -17,6 +19,16 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         private readonly IDirectoryManagerProvider _directoryManagerProvider;
         private readonly IFileManagerProvider _fileManagerProvider;
         private readonly IContractLogic<FileEntity, AddFileRequestContract, FileContract, FileContract, long> _contractLogic;
+
+        readonly IAppUnitOfWork unitOfWork;
+        public FileController(IAppUnitOfWork _unitOfWork) : base(_unitOfWork)
+        {
+            unitOfWork = _unitOfWork;
+            _directoryManagerProvider = _unitOfWork.GetDirectoryManagerProvider();
+            _fileManagerProvider = _unitOfWork.GetFileManagerProvider();
+            _contractLogic = _unitOfWork.GetContractLogic<FileEntity, AddFileRequestContract, FileContract, FileContract, long>();
+        }
+
         public FileController(IDirectoryManagerProvider directoryManagerProvider, IFileManagerProvider fileManagerProvider, IContractLogic<FileEntity, AddFileRequestContract, FileContract, FileContract, long> contractLogic) : base(contractLogic)
         {
             _directoryManagerProvider = directoryManagerProvider;

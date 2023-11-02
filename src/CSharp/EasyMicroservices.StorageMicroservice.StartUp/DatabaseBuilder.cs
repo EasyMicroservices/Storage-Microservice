@@ -7,19 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration.Json;
+using EasyMicroservices.Cores.Relational.EntityFrameworkCore.Intrerfaces;
 
 namespace EasyMicroservices.StorageMicroservice
 {
-    public class DatabaseBuilder : IDatabaseBuilder
+    public class DatabaseBuilder : IEntityFrameworkCoreDatabaseBuilder
     {
-        readonly IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-        .Build();
+        IConfiguration _configuration;
+        public DatabaseBuilder(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         public void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseInMemoryDatabase("Storage");
-            optionsBuilder.UseSqlServer(config.GetConnectionString("local"));
+            optionsBuilder.UseInMemoryDatabase("Storage");
+            //optionsBuilder.UseSqlServer(_configuration.GetConnectionString("local"));
         }
     }
 }
