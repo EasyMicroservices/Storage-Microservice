@@ -22,7 +22,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         private readonly IContractLogic<FolderEntity, AddFolderContract, UpdateFolderContract, FolderContract, long> _contractLogic;
 
         readonly IAppUnitOfWork unitOfWork;
-        public FolderController(IAppUnitOfWork _unitOfWork) : base(_unitOfWork) 
+        public FolderController(IAppUnitOfWork _unitOfWork) : base(_unitOfWork)
         {
             unitOfWork = _unitOfWork;
             _directoryManagerProvider = _unitOfWork.GetDirectoryManagerProvider();
