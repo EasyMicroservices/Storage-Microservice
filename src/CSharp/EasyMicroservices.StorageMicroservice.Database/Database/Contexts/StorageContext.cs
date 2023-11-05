@@ -1,4 +1,5 @@
 ﻿using EasyMicroservices.Cores.Relational.EntityFrameworkCore;
+using EasyMicroservices.Cores.Relational.EntityFrameworkCore.Intrerfaces;
 using EasyMicroservices.StorageMicroservice.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,21 +7,12 @@ namespace EasyMicroservices.StorageMicroservice.Database.Contexts
 {
     public class StorageContext : RelationalCoreContext
     {
-        IDatabaseBuilder _builder;
-        public StorageContext(IDatabaseBuilder builder)
+        public StorageContext(IEntityFrameworkCoreDatabaseBuilder builder) : base(builder)
         {
-            _builder = builder;
         }
 
         public DbSet<FileEntity> Files { get; set; }
         public DbSet<FolderEntity> Folders { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (_builder != null)
-                _builder.OnConfiguring(optionsBuilder);
-            base.OnConfiguring(optionsBuilder);
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
