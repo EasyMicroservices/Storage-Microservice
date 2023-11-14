@@ -14,7 +14,7 @@ namespace EasyMicroservices.StorageMicroservice.WebApi
         public static async Task Main(string[] args)
         {
             var app = CreateBuilder(args);
-            var build = await app.Build<StorageContext>();
+            var build = await app.Build<StorageContext>(true);
             build.MapControllers();
             build.Run();
         }
