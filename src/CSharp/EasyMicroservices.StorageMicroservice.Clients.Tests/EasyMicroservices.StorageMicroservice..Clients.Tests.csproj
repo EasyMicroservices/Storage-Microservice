@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EasyMicroservices.Laboratory" Version="0.0.0.7" />
-    <PackageReference Include="EasyMicroservices.Tests" Version="0.0.0.3" />
+    <PackageReference Include="EasyMicroservices.Laboratory" Version="0.0.0.15" />
+    <PackageReference Include="EasyMicroservices.Tests" Version="0.0.0.9" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
