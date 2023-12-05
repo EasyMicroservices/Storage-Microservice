@@ -1,11 +1,11 @@
-using EasyMicroservices.StorageMicroservice.Database.Contexts;
+using EasyMicroservices.ContentsMicroservice.Helpers;
 using EasyMicroservices.Cores.AspEntityFrameworkCoreApi;
 using EasyMicroservices.Cores.Relational.EntityFrameworkCore.Intrerfaces;
-using EasyMicroservices.ContentsMicroservice.Helpers;
-using EasyMicroservices.Cores.AspEntityFrameworkCoreApi.Interfaces;
 using EasyMicroservices.FileManager.Interfaces;
 using EasyMicroservices.FileManager.Providers.DirectoryProviders;
 using EasyMicroservices.FileManager.Providers.FileProviders;
+using EasyMicroservices.FileManager.Providers.PathProviders;
+using EasyMicroservices.StorageMicroservice.Database.Contexts;
 
 namespace EasyMicroservices.StorageMicroservice.WebApi
 {
@@ -16,33 +16,23 @@ namespace EasyMicroservices.StorageMicroservice.WebApi
             var app = CreateBuilder(args);
             var build = await app.Build<StorageContext>(true);
             build.MapControllers();
-            build.Run();
+            await build.RunAsync();
         }
 
         static WebApplicationBuilder CreateBuilder(string[] args)
         {
-            string webRootPath = @Directory.GetCurrentDirectory();
-
             var app = StartUpExtensions.Create<StorageContext>(args);
-            app.Services.Builder<StorageContext>();
-            app.Services.AddTransient((serviceProvider) => new UnitOfWork(serviceProvider));
+            app.Services.Builder<StorageContext>().UseDefaultSwaggerOptions();
             app.Services.AddTransient(serviceProvider => new StorageContext(serviceProvider.GetService<IEntityFrameworkCoreDatabaseBuilder>()));
             app.Services.AddTransient<IEntityFrameworkCoreDatabaseBuilder, DatabaseBuilder>();
+            app.Services.AddTransient<IAppUnitOfWork>(serviceProvider => new AppUnitOfWork(serviceProvider));
+
+            string webRootPath = Directory.GetCurrentDirectory();
+            app.Services.AddScoped<IPathProvider>(serviceProvider => new SystemPathProvider());
             app.Services.AddScoped<IDirectoryManagerProvider>(serviceProvider => new DiskDirectoryProvider(webRootPath));
-            app.Services.AddScoped<IFileManagerProvider>(serviceProvider => new DiskFileProvider(new DiskDirectoryProvider(webRootPath)));
-            app.Services.AddScoped<IAppUnitOfWork>((serviceProvider) => new AppUnitOfWork(serviceProvider));
-
-            StartUpExtensions.AddWhiteLabel("Content", "RootAddresses:WhiteLabel");
+            app.Services.AddTransient<IFileManagerProvider>(serviceProvider => new DiskFileProvider(new DiskDirectoryProvider(webRootPath)));
+            StartUpExtensions.AddWhiteLabel("Storage", "RootAddresses:WhiteLabel");
             return app;
-        }
-
-        public static async Task Run(string[] args, Action<IServiceCollection> use)
-        {
-            var app = CreateBuilder(args);
-            use?.Invoke(app.Services);
-            var build = await app.Build<StorageContext>();
-            build.MapControllers();
-            build.Run();
         }
     }
 }

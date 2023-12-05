@@ -1,6 +1,5 @@
 ﻿using EasyMicroservices.ContentsMicroservice.Helpers;
 using EasyMicroservices.Cores.AspCoreApi;
-using EasyMicroservices.Cores.AspEntityFrameworkCoreApi;
 using EasyMicroservices.Cores.AspEntityFrameworkCoreApi.Interfaces;
 using EasyMicroservices.Cores.Database.Interfaces;
 using EasyMicroservices.FileManager.Interfaces;
@@ -19,15 +18,12 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
     {
         private readonly IDirectoryManagerProvider _directoryManagerProvider;
         private readonly IFileManagerProvider _fileManagerProvider;
-        private readonly IContractLogic<FileEntity, AddFileRequestContract, FileContract, FileContract, long> _contractLogic;
-
-        readonly IAppUnitOfWork unitOfWork;
-        public FileController(IAppUnitOfWork _unitOfWork) : base(_unitOfWork)
+        private readonly IAppUnitOfWork _unitOfWork;
+        public FileController(IAppUnitOfWork unitOfWork) : base(unitOfWork)
         {
-            unitOfWork = _unitOfWork;
-            _directoryManagerProvider = _unitOfWork.GetDirectoryManagerProvider();
-            _fileManagerProvider = _unitOfWork.GetFileManagerProvider();
-            _contractLogic = _unitOfWork.GetContractLogic<FileEntity, AddFileRequestContract, FileContract, FileContract, long>();
+            _directoryManagerProvider = unitOfWork.GetDirectoryManagerProvider();
+            _fileManagerProvider = unitOfWork.GetFileManagerProvider();
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost]
@@ -50,10 +46,11 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                 UniqueIdentity = input.UniqueIdentity,
                 Key = input.Key
             };
-            var result = await _contractLogic.AddEntity(newFile);
+            var logic = _unitOfWork.GetLongLogic<FileEntity>();
+            var result = await logic.AddEntity(newFile);
 
-            result.Result.Path = await FileLogic.NameToFullPath($"{result.Result.Id}_{fileName}", unitOfWork);
-            await _contractLogic.SaveChangesAsync();
+            result.Result.Path = await FileLogic.NameToFullPath($"{result.Result.Id}_{fileName}", _unitOfWork);
+            await logic.SaveChangesAsync();
 
             using var stream = new FileStream(newFile.Path, FileMode.Create);
             await input.File.CopyToAsync(stream);
@@ -83,13 +80,19 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         [HttpPost]
         public async Task<MessageContract<FileContract>> GetByKeyAndUniqueIdentity(GetByKeyRequestContract request, CancellationToken cancellationToken = default)
         {
-            return await ContractLogic.GetByUniqueIdentity(request, Cores.DataTypes.GetUniqueIdentityType.All, q => q.Where(x => x.Key == request.Key), cancellationToken);
+            return await ContractLogic.GetByUniqueIdentity(request,
+                Cores.DataTypes.GetUniqueIdentityType.All,
+                q => q.Where(x => x.Key == request.Key),
+                cancellationToken);
         }
 
         [HttpPost]
         public async Task<ListMessageContract<FileContract>> GetAllByKeyAndUniqueIdentity(GetByKeyRequestContract request, CancellationToken cancellationToken = default)
         {
-            return await ContractLogic.GetAllByUniqueIdentity(request, Cores.DataTypes.GetUniqueIdentityType.All, q => q.Where(x => x.Key == request.Key), cancellationToken);
+            return await ContractLogic.GetAllByUniqueIdentity(request,
+                Cores.DataTypes.GetUniqueIdentityType.All,
+                q => q.Where(x => x.Key == request.Key),
+                cancellationToken);
         }
 
         [HttpPost]
@@ -117,7 +120,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             {
                 if (find.Result.Password == password)
                 {
-                    var filePath = await FileLogic.NameToFullPath(find.Result.Path, unitOfWork);
+                    var filePath = await FileLogic.NameToFullPath(find.Result.Path, _unitOfWork);
                     if (await _fileManagerProvider.IsExistFileAsync(filePath))
                     {
                         await _fileManagerProvider.DeleteFileAsync(filePath);
@@ -157,7 +160,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             }
             else
             {
-                var filePath = await FileLogic.NameToFullPath(file.Result.Path, unitOfWork);
+                var filePath = await FileLogic.NameToFullPath(file.Result.Path, _unitOfWork);
 
                 if (!await _fileManagerProvider.IsExistFileAsync(filePath))
                 {
