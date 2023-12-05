@@ -98,10 +98,11 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         [HttpPost]
         public async Task<MessageContract<FileContract>> UploadOrReplaceFile([FromForm] AddFileRequestContract input)
         {
-            var currentFile = await base.GetByUniqueIdentity(input.UniqueIdentity);
-            if (currentFile)
+            var currentFile = await base.GetAllByUniqueIdentity(input.UniqueIdentity);
+            var find = currentFile.GetCheckedResult().FirstOrDefault(x => x.Key == input.Key);
+            if (currentFile.HasItems && find != null)
             {
-                var deleteResult = await DeleteFileByPassword(currentFile.Result.Id, currentFile.Result.Password);
+                var deleteResult = await DeleteFileByPassword(find.Id, find.Password);
                 if (!deleteResult)
                     return deleteResult.ToContract<FileContract>();
             }
@@ -154,6 +155,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             if (!file || file.Result.Password != password)
             {
                 HttpContext.Response.StatusCode = 404;
+                Console.WriteLine($"File not found: {file.Result?.Id} {file.Result?.Password}");
                 return default;
             }
             else
@@ -163,6 +165,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                 if (!await _fileManagerProvider.IsExistFileAsync(filePath))
                 {
                     HttpContext.Response.StatusCode = 404;
+                    Console.WriteLine($"File not found: {filePath}");
                     return default;
                 }
 
