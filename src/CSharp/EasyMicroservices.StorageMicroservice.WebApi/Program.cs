@@ -1,3 +1,4 @@
+using EasyMicroservices.ContentsMicroservice.Helpers;
 using EasyMicroservices.Cores.AspEntityFrameworkCoreApi;
 using EasyMicroservices.Cores.Relational.EntityFrameworkCore.Intrerfaces;
 using EasyMicroservices.FileManager.Interfaces;
@@ -24,6 +25,7 @@ namespace EasyMicroservices.StorageMicroservice.WebApi
             app.Services.Builder<StorageContext>().UseDefaultSwaggerOptions();
             app.Services.AddTransient(serviceProvider => new StorageContext(serviceProvider.GetService<IEntityFrameworkCoreDatabaseBuilder>()));
             app.Services.AddTransient<IEntityFrameworkCoreDatabaseBuilder, DatabaseBuilder>();
+            app.Services.AddTransient<IAppUnitOfWork>(serviceProvider => new AppUnitOfWork(serviceProvider));
 
             string webRootPath = Directory.GetCurrentDirectory();
             app.Services.AddScoped<IPathProvider>(serviceProvider => new SystemPathProvider());

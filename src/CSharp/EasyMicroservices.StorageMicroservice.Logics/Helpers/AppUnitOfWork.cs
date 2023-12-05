@@ -2,17 +2,15 @@
 using EasyMicroservices.FileManager.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EasyMicroservices.ContentsMicroservice.Helpers
 {
     public class AppUnitOfWork : UnitOfWork, IAppUnitOfWork
     {
+        IServiceProvider _service;
         public AppUnitOfWork(IServiceProvider service) : base(service)
         {
+            _service = service;
         }
 
         public IDirectoryManagerProvider GetDirectoryManagerProvider()
