@@ -1,4 +1,5 @@
-﻿using EasyMicroservices.FileManager.Interfaces;
+﻿using EasyMicroservices.ContentsMicroservice.Helpers;
+using EasyMicroservices.FileManager.Interfaces;
 using System;
 using System.Threading.Tasks;
 
@@ -6,14 +7,14 @@ namespace EasyMicroservices.StorageMicroservice.Logics
 {
     public static class FileLogic
     {
-        public static async Task<string> NameToFullPath(string fileName, IDirectoryManagerProvider directoryManagerProvider)
+        public static async Task<string> NameToFullPath(string fileName, IAppUnitOfWork _unitOfWork)
         {
             string webRootPath = AppDomain.CurrentDomain.BaseDirectory;
-            string directoryPath = directoryManagerProvider.PathProvider.Combine(webRootPath, "StorageFiles");
-            string filePath = directoryManagerProvider.PathProvider.Combine(directoryPath, fileName);
-            if (!await directoryManagerProvider.IsExistDirectoryAsync(directoryPath))
+            string directoryPath = _unitOfWork.GetDirectoryManagerProvider().PathProvider.Combine(webRootPath, "StorageFiles");
+            string filePath = _unitOfWork.GetDirectoryManagerProvider().PathProvider.Combine(directoryPath, fileName);
+            if (!await _unitOfWork.GetDirectoryManagerProvider().IsExistDirectoryAsync(directoryPath))
             {
-                await directoryManagerProvider.CreateDirectoryAsync(directoryPath);
+                await _unitOfWork.GetDirectoryManagerProvider().CreateDirectoryAsync(directoryPath);
             }
             return filePath;
         }

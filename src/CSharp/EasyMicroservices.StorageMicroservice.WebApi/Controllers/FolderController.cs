@@ -1,4 +1,7 @@
-﻿using EasyMicroservices.FileManager.Interfaces;
+﻿using EasyMicroservices.ContentsMicroservice.Helpers;
+using EasyMicroservices.Cores.AspCoreApi;
+using EasyMicroservices.Cores.Database.Interfaces;
+using EasyMicroservices.FileManager.Interfaces;
 using EasyMicroservices.ServiceContracts;
 using EasyMicroservices.StorageMicroservice.Contracts;
 using EasyMicroservices.StorageMicroservice.Database.Contexts;
@@ -11,17 +14,20 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class FolderController : ControllerBase
+    public class FolderController : SimpleQueryServiceController<FolderEntity, AddFolderContract, UpdateFolderContract, FolderContract, long>
     {
         protected readonly IDirectoryManagerProvider _directoryManagerProvider;
         protected readonly IFileManagerProvider _fileManagerProvider;
-        private readonly StorageContext _context;
 
-        public FolderController(StorageContext context, IDirectoryManagerProvider directoryManagerProvider, IFileManagerProvider fileManagerProvider)
+        private readonly IContractLogic<FolderEntity, AddFolderContract, UpdateFolderContract, FolderContract, long> _contractLogic;
+
+        readonly IAppUnitOfWork unitOfWork;
+        public FolderController(IAppUnitOfWork _unitOfWork) : base(_unitOfWork)
         {
-            _directoryManagerProvider = directoryManagerProvider;
-            _fileManagerProvider = fileManagerProvider;
-            _context = context;
+            unitOfWork = _unitOfWork;
+            _directoryManagerProvider = _unitOfWork.GetDirectoryManagerProvider();
+            _fileManagerProvider = _unitOfWork.GetFileManagerProvider();
+            _contractLogic = _unitOfWork.GetContractLogic<FolderEntity, AddFolderContract, UpdateFolderContract, FolderContract, long>();
         }
 
         private string PathToFullPath(string name)
@@ -31,161 +37,167 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
             return directoryPath;
         }
 
-        [HttpGet]
-        public async Task<MessageContract<List<FolderContract>>> GetAll()
-        {
-            var Folders = await _context.Folders.ToListAsync();
-
-            if (Folders.Count > 0)
-            {
-                return Folders.Select(f => new FolderContract
-                {
-                    Id = f.Id,
-                    CreationDateTime = f.CreationDateTime,
-                    Name = f.Name,
-                    Path = f.Path
-                }).ToList();
-            }
-            else
-                return (FailedReasonType.NotFound, "No directory found");
-        }
-
-        [HttpPut]
-        public async Task<MessageContract<FolderContract>> UpdateAsync(UpdateFolderContract input)
-        {
-            var result = new MessageContract<FolderContract>();
-            string webRootPath = @Directory.GetCurrentDirectory();
-            string Path = input.Path.ToLower();
-
-            if (Regex.IsMatch(Path, @"^[a-zA-Z]+$"))
-            {
-
-                var existingFolder = await _context.Folders.FindAsync(input.Id);
-
-                if (existingFolder != null && _context.Folders.Any(folder => folder.Path == existingFolder.Path))
-                {
-                    Directory.Move(PathToFullPath(existingFolder.Path), PathToFullPath(input.Path));
+        //public override Task<MessageContract<long>> Add(AddFolderContract request, CancellationToken cancellationToken = default)
+        //{
+        //    return base.Add(request, cancellationToken);
+        //}
 
 
-                    existingFolder.ModificationDateTime = DateTime.Now;
-                    existingFolder.Name = input.Name ?? existingFolder.Name;
-                    existingFolder.Path = Path ?? existingFolder.Path;
+        //[HttpGet]
+        //public async Task<MessageContract<List<FolderContract>>> GetAll()
+        //{
+        //    var Folders = await _context.Folders.ToListAsync();
 
-                    result.Result = new FolderContract
-                    {
-                        Id = existingFolder.Id,
-                        CreationDateTime = existingFolder.CreationDateTime,
-                        Name = existingFolder.Name,
-                        Path = existingFolder.Path,
-                    };
-                    result.IsSuccess = true;
+        //    if (Folders.Count > 0)
+        //    {
+        //        return Folders.Select(f => new FolderContract
+        //        {
+        //            Id = f.Id,
+        //            CreationDateTime = f.CreationDateTime,
+        //            Name = f.Name,
+        //            Path = f.Path
+        //        }).ToList();
+        //    }
+        //    else
+        //        return (FailedReasonType.NotFound, "No directory found");
+        //}
 
-                    await _context.SaveChangesAsync();
+        //[HttpPut]
+        //public async Task<MessageContract<FolderContract>> UpdateAsync(UpdateFolderContract input)
+        //{
+        //    var result = new MessageContract<FolderContract>();
+        //    string webRootPath = @Directory.GetCurrentDirectory();
+        //    string Path = input.Path.ToLower();
 
-                }
-                else
-                {
-                    result.IsSuccess = false;
-                    result.Error.Message = "Folder doesn't exist";
-                }
-            }
-            else
-            {
-                result.IsSuccess = false;
-                result.Error.Message = "Your folder path isn't valid.";
-            }
+        //    if (Regex.IsMatch(Path, @"^[a-zA-Z]+$"))
+        //    {
 
-            return result;
-        }
+        //        var existingFolder = await _context.Folders.FindAsync(input.Id);
 
-        [HttpPost]
-        public async Task<MessageContract<FolderContract>> AddAsync(AddFolderContract input)
-        {
-            var result = new MessageContract<FolderContract>();
+        //        if (existingFolder != null && _context.Folders.Any(folder => folder.Path == existingFolder.Path))
+        //        {
+        //            Directory.Move(PathToFullPath(existingFolder.Path), PathToFullPath(input.Path));
 
-            string Path = input.Path.ToLower();
 
-            if (Regex.IsMatch(Path, @"^[a-zA-Z]+$"))
-            {
+        //            existingFolder.ModificationDateTime = DateTime.Now;
+        //            existingFolder.Name = input.Name ?? existingFolder.Name;
+        //            existingFolder.Path = Path ?? existingFolder.Path;
 
-                bool exists = await _directoryManagerProvider.IsExistDirectoryAsync(PathToFullPath(Path)) || _context.Folders.Any(folder => folder.Path == Path); ;
+        //            result.Result = new FolderContract
+        //            {
+        //                Id = existingFolder.Id,
+        //                CreationDateTime = existingFolder.CreationDateTime,
+        //                Name = existingFolder.Name,
+        //                Path = existingFolder.Path,
+        //            };
+        //            result.IsSuccess = true;
 
-                if (!exists)
-                {
+        //            await _context.SaveChangesAsync();
 
-                    var Folder = new FolderEntity
-                    {
-                        CreationDateTime = DateTime.Now,
-                        Name = input.Name,
-                        Path = Path,
-                    };
+        //        }
+        //        else
+        //        {
+        //            result.IsSuccess = false;
+        //            result.Error.Message = "Folder doesn't exist";
+        //        }
+        //    }
+        //    else
+        //    {
+        //        result.IsSuccess = false;
+        //        result.Error.Message = "Your folder path isn't valid.";
+        //    }
 
-                    var AddedFolder = await _context.Folders.AddAsync(Folder);
-                    await _context.SaveChangesAsync();
+        //    return result;
+        //}
 
-                    await _directoryManagerProvider.CreateDirectoryAsync(PathToFullPath(Path));
-                    await _fileManagerProvider.CreateFileAsync(_directoryManagerProvider.PathProvider.Combine(PathToFullPath(Path), ".gitkeep"));
+        //[HttpPost]
+        //public async Task<MessageContract<FolderContract>> AddAsync(AddFolderContract input)
+        //{
+        //    var result = new MessageContract<FolderContract>();
 
-                    result.Result = new FolderContract
-                    {
-                        Id = AddedFolder.Entity.Id,
-                        CreationDateTime = Folder.CreationDateTime,
-                        Name = Folder.Name,
-                        Path = Folder.Path,
-                    };
-                    result.IsSuccess = true;
-                }
-                else
-                {
-                    result.IsSuccess = false;
-                    result.Error.Message = "Folder already exists";
-                }
-            }
-            else
-            {
-                result.IsSuccess = false;
-                result.Error.Message = "Your folder path isn't valid.";
-            }
+        //    string Path = input.Path.ToLower();
 
-            return result;
-        }
+        //    if (Regex.IsMatch(Path, @"^[a-zA-Z]+$"))
+        //    {
 
-        [HttpDelete]
-        public async Task<MessageContract> DeleteAsync(long fileId)
-        {
-            var result = new MessageContract();
+        //        bool exists = await _directoryManagerProvider.IsExistDirectoryAsync(PathToFullPath(Path)) || _context.Folders.Any(folder => folder.Path == Path); ;
 
-            var entityToDelete = await _context.Folders.FindAsync(fileId);
+        //        if (!exists)
+        //        {
 
-            if (entityToDelete != null)
-            {
+        //            var Folder = new FolderEntity
+        //            {
+        //                CreationDateTime = DateTime.Now,
+        //                Name = input.Name,
+        //                Path = Path,
+        //            };
 
-                var FilesInFolder = _context.Files.Where(o => o.FolderId == entityToDelete.Id);
-                if (FilesInFolder.Any())
-                {
-                    foreach (var file in FilesInFolder)
-                    {
-                        _context.Files.Remove(file);
-                    }
-                }
+        //            var AddedFolder = await _context.Folders.AddAsync(Folder);
+        //            await _context.SaveChangesAsync();
 
-                await _directoryManagerProvider.DeleteDirectoryAsync(PathToFullPath(entityToDelete.Path), true);
+        //            await _directoryManagerProvider.CreateDirectoryAsync(PathToFullPath(Path));
+        //            await _fileManagerProvider.CreateFileAsync(_directoryManagerProvider.PathProvider.Combine(PathToFullPath(Path), ".gitkeep"));
 
-                _context.Folders.Remove(entityToDelete);
+        //            result.Result = new FolderContract
+        //            {
+        //                Id = AddedFolder.Entity.Id,
+        //                CreationDateTime = Folder.CreationDateTime,
+        //                Name = Folder.Name,
+        //                Path = Folder.Path,
+        //            };
+        //            result.IsSuccess = true;
+        //        }
+        //        else
+        //        {
+        //            result.IsSuccess = false;
+        //            result.Error.Message = "Folder already exists";
+        //        }
+        //    }
+        //    else
+        //    {
+        //        result.IsSuccess = false;
+        //        result.Error.Message = "Your folder path isn't valid.";
+        //    }
 
-                await _context.SaveChangesAsync();
+        //    return result;
+        //}
 
-                result.IsSuccess = true;
-            }
-            else
-            {
-                result.IsSuccess = false;
-                result.Error.Message = "Folder not found";
-            }
+        //[HttpDelete]
+        //public async Task<MessageContract> DeleteAsync(long fileId)
+        //{
+        //    var result = new MessageContract();
 
-            return result;
+        //    var entityToDelete = await _context.Folders.FindAsync(fileId);
 
-        }
+        //    if (entityToDelete != null)
+        //    {
+
+        //        var FilesInFolder = _context.Files.Where(o => o.FolderId == entityToDelete.Id);
+        //        if (FilesInFolder.Any())
+        //        {
+        //            foreach (var file in FilesInFolder)
+        //            {
+        //                _context.Files.Remove(file);
+        //            }
+        //        }
+
+        //        await _directoryManagerProvider.DeleteDirectoryAsync(PathToFullPath(entityToDelete.Path), true);
+
+        //        _context.Folders.Remove(entityToDelete);
+
+        //        await _context.SaveChangesAsync();
+
+        //        result.IsSuccess = true;
+        //    }
+        //    else
+        //    {
+        //        result.IsSuccess = false;
+        //        result.Error.Message = "Folder not found";
+        //    }
+
+        //    return result;
+
+        //}
 
         //[HttpPost]
         //public async Task<Result> AddSingleFileAsync(List<IFormFile> files)
