@@ -1,4 +1,5 @@
 ﻿using EasyMicroservices.Cores.AspCoreApi;
+using EasyMicroservices.Cores.AspEntityFrameworkCoreApi.Interfaces;
 using EasyMicroservices.Cores.Database.Interfaces;
 using EasyMicroservices.FileManager.Interfaces;
 using EasyMicroservices.ServiceContracts;
@@ -17,11 +18,12 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         private readonly IDirectoryManagerProvider _directoryManagerProvider;
         private readonly IFileManagerProvider _fileManagerProvider;
         private readonly IContractLogic<FileEntity, AddFileRequestContract, FileContract, FileContract, long> _contractLogic;
-        public FileController(IDirectoryManagerProvider directoryManagerProvider, IFileManagerProvider fileManagerProvider, IContractLogic<FileEntity, AddFileRequestContract, FileContract, FileContract, long> contractLogic) : base(contractLogic)
+        private readonly IUnitOfWork _unitOfWork;
+        public FileController(IDirectoryManagerProvider directoryManagerProvider, IFileManagerProvider fileManagerProvider, IUnitOfWork unitOfWork) : base(unitOfWork)
         {
             _directoryManagerProvider = directoryManagerProvider;
             _fileManagerProvider = fileManagerProvider;
-            _contractLogic = contractLogic;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost]
@@ -78,13 +80,19 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         [HttpPost]
         public async Task<MessageContract<FileContract>> GetByKeyAndUniqueIdentity(GetByKeyRequestContract request, CancellationToken cancellationToken = default)
         {
-            return await ContractLogic.GetByUniqueIdentity(request, q => q.Where(x => x.Key == request.Key), cancellationToken);
+            return await ContractLogic.GetByUniqueIdentity(request,
+                Cores.DataTypes.GetUniqueIdentityType.All,
+                q => q.Where(x => x.Key == request.Key),
+                cancellationToken);
         }
 
         [HttpPost]
         public async Task<ListMessageContract<FileContract>> GetAllByKeyAndUniqueIdentity(GetByKeyRequestContract request, CancellationToken cancellationToken = default)
         {
-            return await ContractLogic.GetAllByUniqueIdentity(request, q => q.Where(x => x.Key == request.Key), cancellationToken);
+            return await ContractLogic.GetAllByUniqueIdentity(request,
+                Cores.DataTypes.GetUniqueIdentityType.All,
+                q => q.Where(x => x.Key == request.Key),
+                cancellationToken);
         }
 
         [HttpPost]
