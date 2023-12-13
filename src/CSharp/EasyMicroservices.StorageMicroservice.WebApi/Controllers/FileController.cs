@@ -1,13 +1,12 @@
 ﻿using EasyMicroservices.ContentsMicroservice.Helpers;
 using EasyMicroservices.Cores.AspCoreApi;
-using EasyMicroservices.Cores.AspEntityFrameworkCoreApi.Interfaces;
-using EasyMicroservices.Cores.Database.Interfaces;
 using EasyMicroservices.FileManager.Interfaces;
 using EasyMicroservices.ServiceContracts;
 using EasyMicroservices.StorageMicroservice.Contracts;
 using EasyMicroservices.StorageMicroservice.Contracts.Requests;
 using EasyMicroservices.StorageMicroservice.Database.Entities;
 using EasyMicroservices.StorageMicroservice.Logics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyMicroservices.StorageMicroservice.Controllers
@@ -75,6 +74,14 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
                 };
             }
             return errorContract;
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public Task<MessageContract<FileContract>> GetByIdAndPassword(GetByIdAndPasswordRequestContract request, CancellationToken cancellationToken = default)
+        {
+            return _unitOfWork.GetLongContractLogic<FileEntity, FileContract>()
+                .GetBy(x => x.Id == request.Id && x.Password == request.Password, cancellationToken: cancellationToken);
         }
 
         [HttpPost]
