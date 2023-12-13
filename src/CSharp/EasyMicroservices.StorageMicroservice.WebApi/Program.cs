@@ -32,6 +32,7 @@ namespace EasyMicroservices.StorageMicroservice.WebApi
             app.Services.AddScoped<IDirectoryManagerProvider>(serviceProvider => new DiskDirectoryProvider(webRootPath));
             app.Services.AddTransient<IFileManagerProvider>(serviceProvider => new DiskFileProvider(new DiskDirectoryProvider(webRootPath)));
             StartUpExtensions.AddWhiteLabel("Storage", "RootAddresses:WhiteLabel");
+            StartUpExtensions.AddAuthentication("RootAddresses:Authentication");
             return app;
         }
     }

@@ -78,6 +78,55 @@
         }
       }
     },
+    "/api/File/GetByIdAndPassword": {
+      "post": {
+        "tags": [
+          "File"
+        ],
+        "operationId": "GetByIdAndPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetByIdAndPasswordRequestContract"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetByIdAndPasswordRequestContract"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetByIdAndPasswordRequestContract"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileContractMessageContract"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/File/GetByKeyAndUniqueIdentity": {
       "post": {
         "tags": [
@@ -2226,6 +2275,20 @@
           },
           "result": {
             "$ref": "#/components/schemas/FolderContract"
+          }
+        }
+      },
+      "GetByIdAndPasswordRequestContract": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
