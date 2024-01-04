@@ -2,7 +2,7 @@
 
 namespace EasyMicroservices.StorageMicroservice.Contracts.Requests
 {
-    public class GetByKeyRequestContract : GetUniqueIdentityRequestContract
+    public class GetByKeyRequestContract : GetByUniqueIdentityRequestContract
     {
         public string Key { get; set; }
     }

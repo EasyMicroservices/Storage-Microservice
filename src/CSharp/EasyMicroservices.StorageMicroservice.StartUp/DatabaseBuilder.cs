@@ -1,22 +1,22 @@
-﻿using EasyMicroservices.Cores.Relational.EntityFrameworkCore.Intrerfaces;
+﻿using EasyMicroservices.Cores.Relational.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace EasyMicroservices.StorageMicroservice
 {
-    public class DatabaseBuilder : IEntityFrameworkCoreDatabaseBuilder
+    public class DatabaseBuilder : EntityFrameworkCoreDatabaseBuilder
     {
-        public DatabaseBuilder(IConfiguration configuration)
+        public DatabaseBuilder(IConfiguration configuration) : base(configuration)
         {
-            _config = configuration;
         }
 
-        readonly IConfiguration _config;
-
-        public void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseInMemoryDatabase("Storage");
-            //optionsBuilder.UseSqlServer(_config.GetConnectionString("local"));
+            var entity = GetEntity();
+            if (entity.IsSqlServer())
+                optionsBuilder.UseSqlServer(entity.ConnectionString);
+            else if (entity.IsInMemory())
+                optionsBuilder.UseInMemoryDatabase("Storage");
         }
     }
 }

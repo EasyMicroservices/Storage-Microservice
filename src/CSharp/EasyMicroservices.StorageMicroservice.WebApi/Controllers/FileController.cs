@@ -119,7 +119,7 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         [HttpDelete]
         public async Task<MessageContract> DeleteFileByPassword(long fileId, string password)
         {
-            var find = await GetById(new Cores.Contracts.Requests.GetIdRequestContract<long>()
+            var find = await GetById(new Cores.Contracts.Requests.GetByIdRequestContract<long>()
             {
                 Id = fileId
             });
@@ -152,10 +152,11 @@ namespace EasyMicroservices.StorageMicroservice.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(FileContentResult), 200)]
         public async Task<FileContentResult> DownloadFileAsync([FromQuery] long id, [FromQuery] string password)
         {
-            var file = await GetById(new Cores.Contracts.Requests.GetIdRequestContract<long>()
+            var file = await GetById(new Cores.Contracts.Requests.GetByIdRequestContract<long>()
             {
                 Id = id
             });
