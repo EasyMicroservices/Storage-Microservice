@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EasyMicroservices.Cores.AspCoreApi" Version="0.0.0.64" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.14">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -17,5 +16,12 @@
   <ItemGroup>
     <ProjectReference Include="..\EasyMicroservices.StorageMicroservice.StartUp\EasyMicroservices.StorageMicroservice.StartUp.csproj" />
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <Content Update="web.config" CopyToPublishDirectory="Never" />
+    <Content Update="appsettings.json" CopyToPublishDirectory="Never" />
+    <Content Update="appsettings.*.json" CopyToPublishDirectory="Never" />
+    <Content Update="appsettings.$(MSBuildThisFileName).json" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+  
 </Project>
