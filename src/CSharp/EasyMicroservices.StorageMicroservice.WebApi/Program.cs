@@ -16,7 +16,7 @@ namespace EasyMicroservices.StorageMicroservice.WebApi
             var app = CreateBuilder(args);
             var build = await app.BuildWithUseCors<StorageContext>(null, true);
             build.MapControllers();
-            var filesPath =  build.Configuration.GetValue<string>("DiskFilesPath");
+            var filesPath = build.Configuration.GetValue<string>("DiskFilesPath");
             if (filesPath != ".")
                 WebRootPath = filesPath;
             await build.RunAsync();
